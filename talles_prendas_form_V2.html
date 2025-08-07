@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabla de Talles - Apolo Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #2e4c2f;
+    }
+    .container {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label, select, input, button {
+      display: block;
+      margin: 10px 0;
+    }
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    .dynamic-inputs {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .talle-box {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      flex: 1 1 calc(14% - 10px);
+      min-width: 120px;
+      box-sizing: border-box;
+    }
+    .talle-box input {
+      width: 100%;
+      max-width: 60px;
+      margin-bottom: 5px;
+    }
+    .talle-header {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .output {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .output img.logo {
+      width: 120px;
+      height: auto;
+    }
+    .output img.prenda {
+      width: 120px;
+      height: auto;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background: #2e4c2f;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Generador de Tabla de Talles</h1>
+
+    <label for="tipoPrenda">Tipo de prenda:</label>
+    <select id="tipoPrenda">
+      <option value="pantalon">Pantalón</option>
+      <option value="remera">Remera</option>
+      <option value="buzo">Buzo</option>
+      <option value="camisaco">Camisaco</option>
+      <option value="camisa">Camisa</option>
+    </select>
+
+    <div class="dynamic-inputs" id="inputsContainer"></div>
+
+    <button onclick="generarTabla()">Generar</button>
+
+    <div class="output" id="outputContainer"></div>
+  </div>
+
+  <script>
+    const tipoPrenda = document.getElementById('tipoPrenda');
+    const inputsContainer = document.getElementById('inputsContainer');
+
+    const talles = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+    const valoresPorTalle = {};
+
+    function obtenerCamposPorTipo(tipo) {
+      return tipo === 'pantalon'
+        ? ['Ancho', 'Largo', 'Ancho de pierna']
+        : ['Ancho de pecho', 'Ancho de hombros', 'Largo'];
+    }
+
+    tipoPrenda.addEventListener('change', actualizarCampos);
+
+    function actualizarCampos() {
+      const campos = obtenerCamposPorTipo(tipoPrenda.value);
+      inputsContainer.innerHTML = '';
+
+      talles.forEach(talle => {
+        if (!valoresPorTalle[talle]) valoresPorTalle[talle] = { activo: true, valores: {} };
+
+        const box = document.createElement('div');
+        box.className = 'talle-box';
+
+        const header = document.createElement('div');
+        header.className = 'talle-header';
+        header.innerHTML = `<span>Talle ${talle}</span>`;
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = valoresPorTalle[talle].activo;
+        checkbox.addEventListener('change', () => valoresPorTalle[talle].activo = checkbox.checked);
+
+        header.appendChild(checkbox);
+        box.appendChild(header);
+
+        campos.forEach(campo => {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.maxLength = 5;
+          input.placeholder = campo;
+          input.value = valoresPorTalle[talle].valores[campo] || '';
+
+          input.addEventListener('input', () => {
+            valoresPorTalle[talle].valores[campo] = input.value;
+          });
+
+          box.appendChild(input);
+        });
+
+        inputsContainer.appendChild(box);
+      });
+    }
+
+    function generarTabla() {
+      const container = document.getElementById('outputContainer');
+      container.innerHTML = '';
+
+      const logo = document.createElement('img');
+      logo.src = 'logo.png';
+      logo.className = 'logo';
+      container.appendChild(logo);
+
+      const titulo = document.createElement('h2');
+      titulo.textContent = 'Guía de talles';
+      titulo.style.margin = '0';
+      container.appendChild(titulo);
+
+      const imagen = document.createElement('img');
+      imagen.src = obtenerImagenDePrenda(tipoPrenda.value);
+      imagen.alt = 'Tipo de prenda';
+      imagen.className = 'prenda';
+      container.appendChild(imagen);
+
+      const tabla = document.createElement('table');
+      const campos = obtenerCamposPorTipo(tipoPrenda.value);
+
+      const cabecera = document.createElement('tr');
+      cabecera.innerHTML = '<th>Talle</th>' + campos.map(c => `<th>${c}</th>`).join('');
+      tabla.appendChild(cabecera);
+
+      talles.forEach(talle => {
+        if (valoresPorTalle[talle]?.activo) {
+          const fila = document.createElement('tr');
+          fila.innerHTML = `<td>${talle}</td>` + campos.map(campo => {
+            return `<td>${valoresPorTalle[talle].valores[campo] || '-'}</td>`;
+          }).join('');
+          tabla.appendChild(fila);
+        }
+      });
+
+      container.appendChild(tabla);
+    }
+
+    function obtenerImagenDePrenda(tipo) {
+      // Acá podrías reemplazar con URLs locales o base64 si no hay conexión
+      const imagenes = {
+        pantalon: 'https://via.placeholder.com/100x120?text=Pantalón',
+        remera: 'remera.png',
+        buzo: 'https://via.placeholder.com/100x120?text=Buzo',
+        camisaco: 'https://via.placeholder.com/100x120?text=Camisaco',
+        camisa: 'https://via.placeholder.com/100x120?text=Camisa'
+      };
+      return imagenes[tipo] || '';
+    }
+
+    actualizarCampos(); // inicializar
+  </script>
+</body>
+</html>

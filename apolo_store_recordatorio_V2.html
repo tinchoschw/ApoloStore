@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Apolo Store - Recordatorio</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    label {
+      font-weight: 600;
+    }
+    input, select, button {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #2e5f3e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+    button:hover {
+      background-color: #1d3f29;
+    }
+    .resultado-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 30px;
+      max-width: 800px;
+    }
+    .resultado-container img {
+      height: 150px;
+      object-fit: contain;
+    }
+    .resultado-container p {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    #copiarBtn {
+      margin-top: 10px;
+      background-color: #6b8e23;
+    }
+    #copiarBtn:hover {
+      background-color: #4b6e12;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generador de Recordatorio - Apolo Store</h1>
+  <form id="formulario">
+    <label>Nombre:</label>
+    <input type="text" id="nombre">
+    <label>Monto:</label>
+    <input type="text" id="monto">
+    <label>Fecha:</label>
+    <input type="text" id="fecha">
+    <label>Vendedor:</label>
+    <select id="vendedor">
+      <option value="Nir">Nir</option>
+      <option value="Nirvana">Nirvana</option>
+      <option value="Tincho">Tincho</option>
+      <option value="Martin">Martin</option>
+    </select>
+    <button type="button" onclick="generarMensaje()">Generar</button>
+  </form>
+
+  <div id="resultado" class="resultado-container" style="display: none;">
+    <img src="logo.png" alt="Logo Apolo Store">
+    <div>
+      <p id="mensajeGenerado"></p>
+      <button id="copiarBtn" onclick="copiarMensaje()">Copiar mensaje</button>
+    </div>
+  </div>
+
+  <script>
+    function generarMensaje() {
+      const nombre = document.getElementById('nombre').value;
+      const monto = document.getElementById('monto').value;
+      const fecha = document.getElementById('fecha').value;
+      const vendedor = document.getElementById('vendedor').value;
+      const mensaje = `Holaaaaaa ${nombre}! Como estas? Porfa no te olvides de saldar tu deuda con nosotros. Así como es importante vender y cuidar a nuestros clientes ofreciendo ropa linda, de calidad y a buen precio, también es importante poder cobrar a tiempo para poder mantener la marca e incluso hacerla crecer. Pagar al mes siguiente es un compromiso mutuo, de nosotros confiando en nuestros clientes y de nuestros clientes devolviendo esa confianza.
+
+Por las dudas te recordamos que tu saldo es de $${monto} de tu compra realizada el ${fecha} a ${vendedor} del equipo Apolo Store.
+
+Si tenés alguna duda estamos para lo que necesites.`;
+
+      document.getElementById('mensajeGenerado').innerText = mensaje;
+      document.getElementById('resultado').style.display = 'flex';
+    }
+
+    function copiarMensaje() {
+      const texto = document.getElementById('mensajeGenerado').innerText;
+      navigator.clipboard.writeText(texto).then(() => {
+        alert('Mensaje copiado al portapapeles');
+      }, () => {
+        alert('Error al copiar el mensaje');
+      });
+    }
+  </script>
+</body>
+</html>

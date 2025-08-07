@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabla de Talles - Apolo Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #2e4c2f;
+    }
+    .container {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label, select, input, button {
+      display: block;
+      margin: 10px 0;
+    }
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    .dynamic-inputs {
+      margin-top: 20px;
+    }
+    .output {
+      margin-top: 30px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .output img {
+      width: 150px;
+      height: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #2e4c2f;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Generador de Tabla de Talles</h1>
+
+    <label for="tipoPrenda">Tipo de prenda:</label>
+    <select id="tipoPrenda">
+      <option value="pantalon">Pantalón</option>
+      <option value="remera">Remera</option>
+      <option value="buzo">Buzo</option>
+      <option value="camisaco">Camisaco</option>
+      <option value="camisa">Camisa</option>
+    </select>
+
+    <div class="checkbox-group">
+      <label><input type="checkbox" value="XS"> XS</label>
+      <label><input type="checkbox" value="S"> S</label>
+      <label><input type="checkbox" value="M"> M</label>
+      <label><input type="checkbox" value="L"> L</label>
+      <label><input type="checkbox" value="XL"> XL</label>
+      <label><input type="checkbox" value="XXL"> XXL</label>
+      <label><input type="checkbox" value="XXXL"> XXXL</label>
+    </div>
+
+    <div class="dynamic-inputs" id="inputsContainer"></div>
+
+    <button onclick="generarTabla()">Generar</button>
+
+    <div class="output" id="outputContainer"></div>
+  </div>
+
+  <script>
+    const tipoPrenda = document.getElementById('tipoPrenda');
+    const inputsContainer = document.getElementById('inputsContainer');
+    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+
+    checkboxes.forEach(cb => cb.addEventListener('change', actualizarCampos));
+    tipoPrenda.addEventListener('change', actualizarCampos);
+
+    function actualizarCampos() {
+      inputsContainer.innerHTML = '';
+      const campos = obtenerCamposPorTipo(tipoPrenda.value);
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          const div = document.createElement('div');
+          div.innerHTML = `<h4>Talle ${cb.value}</h4>`;
+          campos.forEach(campo => {
+            const input = document.createElement('input');
+            input.placeholder = campo;
+            input.name = `${cb.value}-${campo}`;
+            div.appendChild(input);
+          });
+          inputsContainer.appendChild(div);
+        }
+      });
+    }
+
+    function obtenerCamposPorTipo(tipo) {
+      if (tipo === 'pantalon') return ['Ancho', 'Largo', 'Ancho de pierna'];
+      return ['Ancho de pecho', 'Ancho de hombros', 'Largo'];
+    }
+
+    function generarTabla() {
+      const container = document.getElementById('outputContainer');
+      container.innerHTML = '';
+      const logo = document.createElement('img');
+      logo.src = 'logo.png';
+      container.appendChild(logo);
+
+      const tabla = document.createElement('table');
+      const campos = obtenerCamposPorTipo(tipoPrenda.value);
+      const cabecera = document.createElement('tr');
+      cabecera.innerHTML = '<th>Talle</th>' + campos.map(c => `<th>${c}</th>`).join('');
+      tabla.appendChild(cabecera);
+
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          const fila = document.createElement('tr');
+          fila.innerHTML = `<td>${cb.value}</td>` + campos.map(campo => {
+            const valor = document.querySelector(`input[name="${cb.value}-${campo}"]`)?.value || '-';
+            return `<td>${valor}</td>`;
+          }).join('');
+          tabla.appendChild(fila);
+        }
+      });
+
+      container.appendChild(tabla);
+    }
+  </script>
+</body>
+</html>
