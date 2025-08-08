@@ -143,10 +143,12 @@
     }
 
     function copiarImagen() {
-      html2canvas(output).then(canvas => {
+      html2canvas(output, { backgroundColor: "#ffffff" }).then(canvas => {
         canvas.toBlob(blob => {
           navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-          alert("Imagen copiada al portapapeles.");
+          setTimeout(() => {
+            alert("Imagen copiada al portapapeles.");
+          }, 500);
         });
       });
     }
