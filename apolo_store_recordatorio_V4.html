@@ -83,7 +83,7 @@
   </style>
 </head>
 <body>
-  <h1>AAAAGenerador de mensaje de deuda - Apolo Store</h1>
+  <h1>BBBBGenerador de mensaje de deuda - Apolo Store</h1>
   <form id="form">
     <label>Nombre del cliente:</label>
     <input type="text" id="nombre" required>
@@ -122,12 +122,14 @@
       const vendedor = document.getElementById("vendedor").value;
 
       output.innerHTML = `
-        <img src="logo.png" alt="Logo Apolo Store">
-        <p>
-          Holaaaaaa ${nombre}! Como estas? Porfa no te olvides de saldar tu deuda con nosotros. Así como es importante vender y cuidar a nuestros clientes ofreciendo ropa linda, de calidad y a buen precio, también es importante poder cobrar a tiempo para poder mantener la marca e incluso hacerla crecer. Pagar al mes siguiente es un compromiso mutuo, de nosotros confiando en nuestros clientes y de nuestros clientes devolviendo esa confianza.<br><br>
-          Por las dudas te recordamos que tu saldo es de ${monto} de tu compra realizada el ${fecha} a ${vendedor} del equipo Apolo Store.<br><br>
-          Si tenés alguna duda estamos para lo que necesites.
-        </p>
+        <div id="output-canvas" style="background:#fff; padding:20px; border-radius:10px; display:flex; align-items:center; gap:20px; max-width:800px;">
+          <img src="logo.png" alt="Logo Apolo Store">
+          <p>
+            Holaaaaaa ${nombre}! Como estas? Porfa no te olvides de saldar tu deuda con nosotros. Así como es importante vender y cuidar a nuestros clientes ofreciendo ropa linda, de calidad y a buen precio, también es importante poder cobrar a tiempo para poder mantener la marca e incluso hacerla crecer. Pagar al mes siguiente es un compromiso mutuo, de nosotros confiando en nuestros clientes y de nuestros clientes devolviendo esa confianza.<br><br>
+            Por las dudas te recordamos que tu saldo es de ${monto} de tu compra realizada el ${fecha} a ${vendedor} del equipo Apolo Store.<br><br>
+            Si tenés alguna duda estamos para lo que necesites.
+          </p>
+        </div>
       `;
 
       output.style.display = "flex";
@@ -135,7 +137,8 @@
     });
 
     function descargarImagen() {
-      html2canvas(output).then(canvas => {
+      const outputCanvas = document.getElementById("output-canvas");
+      html2canvas(outputCanvas).then(canvas => {
         const link = document.createElement("a");
         link.download = "recordatorio-apolo.png";
         link.href = canvas.toDataURL();
@@ -144,14 +147,8 @@
     }
 
     function copiarImagen() {
-      // Ocultar temporalmente el overlay si existe
-      const overlay = document.querySelector('.overlay'); // ajusta el selector
-      if (overlay) overlay.style.display = 'none';
-
-      html2canvas(output, { backgroundColor: "#ffffff" }).then(canvas => {
-        // Restaurar overlay
-        if (overlay) overlay.style.display = '';
-
+      const outputCanvas = document.getElementById("output-canvas");
+      html2canvas(outputCanvas, { backgroundColor: "#ffffff" }).then(canvas => {
         canvas.toBlob(blob => {
           navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
           setTimeout(() => {
