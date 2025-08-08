@@ -143,7 +143,14 @@
     }
 
     function copiarImagen() {
+      // Ocultar temporalmente el overlay si existe
+      const overlay = document.querySelector('.overlay'); // ajusta el selector
+      if (overlay) overlay.style.display = 'none';
+
       html2canvas(output, { backgroundColor: "#ffffff" }).then(canvas => {
+        // Restaurar overlay
+        if (overlay) overlay.style.display = '';
+
         canvas.toBlob(blob => {
           navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
           setTimeout(() => {
