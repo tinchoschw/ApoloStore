@@ -78,15 +78,10 @@ async function loadData(){
   try{
     const r=await fetch(`https://docs.google.com/spreadsheets/d/1dfQ2Sys3vZSO4HLdF3XMxkN3bHlF3jaUS84VfIINiGc/gviz/tq?tqx=out:csv&gid=1515490805`);
     if(!r.ok)throw new Error();
-    console.log("llego 1");
     const rows=parseCSV(await r.text());
-    console.log("llego 2");
     const h=rows[0].map(x=>x.trim().toLowerCase());
-    console.log("llego 3");
     const i={cod:h.indexOf('codigo'),cat:h.indexOf('categoria'),desc:h.indexOf('descripcion'),color:h.indexOf('color'),talle:h.indexOf('talle'),stock:h.indexOf('stock'),precio:h.indexOf('precio'),precioSin:h.indexOf('precio sin descuento'),f1:h.indexOf('columna 2'),f2:h.indexOf('columna 1'),f3:h.indexOf('columna 3')};
-    console.log("llego 4");
     productos=rows.slice(1).filter(r=>r[i.cod]?.trim()).map(r=>({codigo:r[i.cod]?.trim(),cat:r[i.cat]?.trim(),desc:r[i.desc]?.trim(),color:r[i.color]?.trim(),talle:r[i.talle]?.trim(),stock:parseInt(r[i.stock])||0,precio:parseInt(r[i.precio])||0,precioSin:parseInt(r[i.precioSin])||0,fotos:[r[i.f1],r[i.f2],r[i.f3]].map(f=>f?.trim()).filter(f=>f&&!f.includes('VENDIDO')&&!f.includes('¡'))}));
-    console.log("llego 5");
     render();
   }catch(e){
     document.getElementById('grid').innerHTML='<div class="empty">No se pudo cargar el catálogo.<br>Verificá que el Sheet sea público en modo lectura.</div>';
