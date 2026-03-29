@@ -11,20 +11,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .shop-name{font-size:20px;font-weight:600}
 .shop-sub{font-size:12px;color:#888;margin-top:2px}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px}
-.filters{display:flex;gap:8px;padding:0.75rem 1rem;flex-wrap:wrap;background:#fff;border-bottom:1px solid #e5e5e5;overflow-x:auto}
-.chip{font-size:12px;padding:5px 13px;border-radius:99px;border:1px solid #ddd;background:#fff;color:#555;cursor:pointer;white-space:nowrap}
+.filters{display:flex;gap:8px;padding:0.75rem 1rem;flex-wrap:wrap;background:#fff;border-bottom:1px solid #e5e5e5}
+.chip{font-size:12px;padding:5px 13px;border-radius:99px;border:1px solid #ddd;background:#fff;color:#555;cursor:pointer;white-space:nowrap;transition:all .15s}
 .chip.active{background:#111;color:#fff;border-color:#111}
 .toolbar{padding:0.5rem 1rem;font-size:12px;color:#888}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:0.75rem 1rem 3rem}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow 0.15s}
-.card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;padding:0.75rem 1rem 2rem}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
 .img-wrap{width:100%;aspect-ratio:1;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:38px;position:relative;overflow:hidden}
-.img-wrap img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
-.foto-count{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.5);color:#fff;font-size:10px;padding:2px 6px;border-radius:99px}
-.badge{position:absolute;top:6px;left:6px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
-.badge-ok{background:#dcfce7;color:#166534}
-.badge-low{background:#fef9c3;color:#854d0e}
-.info{padding:8px 10px 11px}
+.img-wrap img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.foto-count{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:2px 6px;border-radius:99px}
+.stock-badge{position:absolute;top:6px;left:6px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
+.badge-ok{background:#dcfce7;color:#16a34a}
+.badge-low{background:#fef9c3;color:#ca8a04}
+.info{padding:8px 10px 10px}
 .prod-name{font-size:13px;font-weight:600;line-height:1.3}
 .prod-color{font-size:11px;color:#888;margin-top:2px}
 .talles{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
@@ -32,30 +32,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .price-row{margin-top:6px;display:flex;align-items:baseline;gap:5px}
 .price{font-size:14px;font-weight:700}
 .price-old{font-size:11px;color:#aaa;text-decoration:line-through}
-.empty{grid-column:1/-1;text-align:center;padding:3rem;color:#888;font-size:14px}
-.loading{grid-column:1/-1;text-align:center;padding:3rem;color:#888;font-size:13px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:flex-end;justify-content:center;z-index:100}
-.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:100;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:88vh;overflow-y:auto}
 .modal-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1rem 0.5rem;position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;z-index:1}
 .modal-title{font-size:16px;font-weight:600}
-.close-btn{width:28px;height:28px;border-radius:50%;background:#f0f0f0;border:none;cursor:pointer;font-size:16px;color:#555;display:flex;align-items:center;justify-content:center}
-.carousel{position:relative;width:100%;aspect-ratio:1;background:#f0f0f0;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.carousel img{width:100%;height:100%;object-fit:cover}
-.carousel-emoji{font-size:64px}
-.car-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.4);color:#fff;border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.close-btn{width:28px;height:28px;border-radius:50%;background:#f0f0f0;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#555}
+.carousel{position:relative;width:100%;aspect-ratio:1;background:#000;overflow:hidden}
+.car-slide{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
+.car-slide.active{display:flex}
+.car-slide img{width:100%;height:100%;object-fit:cover}
+.car-slide video{width:100%;height:100%;object-fit:contain}
+.car-slide.no-media{background:#f0f0f0;font-size:64px}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);color:#fff;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:2}
 .car-prev{left:8px}.car-next{right:8px}
-.car-dots{display:flex;gap:5px;justify-content:center;padding:8px}
-.dot{width:6px;height:6px;border-radius:50%;background:#ddd;cursor:pointer}
-.dot.active{background:#111}
+.thumbs{display:flex;gap:6px;padding:8px 1rem;overflow-x:auto}
+.thumb{width:54px;height:54px;border-radius:6px;cursor:pointer;border:2px solid transparent;flex-shrink:0;overflow:hidden;background:#f0f0f0;position:relative}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.thumb.active{border-color:#111}
+.vid-badge{position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;border-radius:3px;padding:1px 3px;line-height:1.4}
 .modal-body{padding:1rem}
-.modal-color{font-size:13px;color:#888;margin-bottom:12px}
-.section-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.modal-color{font-size:13px;color:#888;margin-bottom:10px}
+.section-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
 .talles-grid{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
-.talle-pill{font-size:13px;padding:5px 12px;border-radius:8px;border:1px solid #ddd;color:#333}
-.talle-pill.ok{border-color:#86efac;background:#dcfce7;color:#166534}
+.talle-pill{font-size:13px;padding:5px 12px;border-radius:8px;border:1px solid #ddd;color:#111}
+.talle-pill.ok{border-color:#16a34a;background:#dcfce7;color:#16a34a}
 .modal-price{font-size:22px;font-weight:700;margin-bottom:4px}
 .modal-price-old{font-size:14px;color:#aaa;text-decoration:line-through;margin-bottom:1rem}
-.wa-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:12px;background:#25d366;color:#fff;font-size:15px;font-weight:600;border:none;cursor:pointer;text-decoration:none;margin-top:0.5rem}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:12px;background:#25d366;color:#fff;font-size:15px;font-weight:600;border:none;cursor:pointer;text-decoration:none}
+.wa-btn:hover{background:#1ebe5d}
+.empty,.loading{grid-column:1/-1;text-align:center;padding:3rem;color:#888;font-size:14px}
+.error{grid-column:1/-1;text-align:center;padding:2rem;color:#dc2626;font-size:13px;background:#fef2f2;border-radius:12px}
 </style>
 </head>
 <body>
@@ -67,77 +74,135 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="toolbar" id="toolbar"></div>
 <div class="grid" id="grid"><div class="loading">Cargando productos...</div></div>
 <div id="modal-container"></div>
+
 <script>
 const SHEET_ID='1dfQ2Sys3vZSO4HLdF3XMxkN3bHlF3jaUS84VfIINiGc';
 const GID='1515490805';
 const WA='5491130025002';
-const EMOJIS={'Camisas':'👔','Camisacos':'🧥','Camperitas':'🫰','Buzos Con capucha':'🏋️','Buzos Cuello redondo':'👕','Pantalones':'👖','Bermudas':'🩳','Remeras':'👕'};
-let productos=[],activa='Todos',modalData=null,carIdx=0;
+const EMOJIS={'Camisas':'👔','Camisacos':'🧥','Camperitas':'🫰','Buzos Con capucha':'🥷','Buzos Cuello redondo':'👕','Pantalones':'👖','Bermudas':'🩳','Remeras':'👕'};
+let productos=[],activa='Todos',_filtrados=[],carIdx=0,modalData=null;
+
+function isVideo(url){
+  if(!url)return false;
+  return /\.(mp4|mov|webm|avi)(\?|$)/i.test(url)||url.includes('drive.google.com/file');
+}
+function resolveUrl(f){return(f&&f.startsWith('http'))?f:null;}
 
 async function loadData(){
   try{
-    const r=await fetch(`https://docs.google.com/spreadsheets/d/1dfQ2Sys3vZSO4HLdF3XMxkN3bHlF3jaUS84VfIINiGc/gviz/tq?tqx=out:csv&gid=1515490805`);
-    if(!r.ok)throw new Error();
+    const r=await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`);
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const rows=parseCSV(await r.text());
     const h=rows[0].map(x=>x.trim().toLowerCase());
     const i={cod:h.indexOf('codigo'),cat:h.indexOf('categoria'),desc:h.indexOf('descripcion'),color:h.indexOf('color'),talle:h.indexOf('talle'),stock:h.indexOf('stock'),precio:h.indexOf('precio'),precioSin:h.indexOf('precio sin descuento'),f1:h.indexOf('columna 2'),f2:h.indexOf('columna 1'),f3:h.indexOf('columna 3')};
-    productos=rows.slice(1).filter(r=>r[i.cod]?.trim()).map(r=>({codigo:r[i.cod]?.trim(),cat:r[i.cat]?.trim(),desc:r[i.desc]?.trim(),color:r[i.color]?.trim(),talle:r[i.talle]?.trim(),stock:parseInt(r[i.stock])||0,precio:parseInt(r[i.precio])||0,precioSin:parseInt(r[i.precioSin])||0,fotos:[r[i.f1],r[i.f2],r[i.f3]].map(f=>f?.trim()).filter(f=>f&&!f.includes('VENDIDO')&&!f.includes('¡'))}));
+    productos=rows.slice(1).filter(r=>r[i.cod]?.trim()).map(r=>({cod:r[i.cod]?.trim(),cat:r[i.cat]?.trim(),desc:r[i.desc]?.trim(),color:r[i.color]?.trim(),talle:r[i.talle]?.trim(),stock:parseInt(r[i.stock])||0,precio:parseInt(r[i.precio])||0,precioSin:parseInt(r[i.precioSin])||0,media:[r[i.f1],r[i.f2],r[i.f3]].map(f=>f?.trim()).filter(f=>f&&!f.includes('VENDIDO')&&!f.startsWith('¡'))}));
     render();
   }catch(e){
-    document.getElementById('grid').innerHTML='<div class="empty">No se pudo cargar el catálogo.<br>Verificá que el Sheet sea público en modo lectura.</div>';
+    document.getElementById('grid').innerHTML=`<div class="error">No se pudo cargar el catálogo.<br><small>${e.message}</small><br><br>Verificá que la hoja "Productos" esté publicada en la web.</div>`;
   }
 }
 
-function parseCSV(text){
-  const rows=[];let row=[];let cell='';let inQ=false;
-  for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(inQ&&text[i+1]==='"'){cell+='"';i++;}else inQ=!inQ;}else if(c===','&&!inQ){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!inQ){row.push(cell);rows.push(row);row=[];cell='';if(c==='\r'&&text[i+1]==='\n')i++;}else cell+=c;}
+function parseCSV(t){
+  const rows=[];let row=[],cell='',inQ=false;
+  for(let i=0;i<t.length;i++){const c=t[i];if(c==='"'){if(inQ&&t[i+1]==='"'){cell+='"';i++;}else inQ=!inQ;}else if(c===','&&!inQ){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!inQ){row.push(cell);rows.push(row);row=[];cell='';if(c==='\r'&&t[i+1]==='\n')i++;}else cell+=c;}
   if(cell||row.length){row.push(cell);rows.push(row);}return rows;
 }
 
 function group(){
   const map={};
-  productos.forEach(p=>{const k=p.desc+'||'+p.color;if(!map[k])map[k]={cat:p.cat,desc:p.desc,color:p.color,precio:p.precio,precioSin:p.precioSin,talles:[],fotos:p.fotos,total:0};map[k].talles.push({talle:p.talle,stock:p.stock});map[k].total+=p.stock;if(p.fotos.length>map[k].fotos.length)map[k].fotos=p.fotos;});
+  productos.forEach(p=>{const k=p.desc+'||'+p.color;if(!map[k])map[k]={cat:p.cat,desc:p.desc,color:p.color,precio:p.precio,precioSin:p.precioSin,talles:[],media:p.media,total:0};map[k].talles.push({talle:p.talle,stock:p.stock});map[k].total+=p.stock;if(p.media.length>map[k].media.length)map[k].media=p.media;});
   return Object.values(map).filter(p=>p.total>0);
 }
 
-function fmt(n){return '$'+Number(n).toLocaleString('es-AR');}
-function resolvePhoto(f){if(!f)return null;if(f.startsWith('http'))return f;return null;}
-
-function renderFilters(){
-  const cats=['Todos',...new Set(productos.map(p=>p.cat).filter(Boolean))];
-  document.getElementById('filters').innerHTML=cats.map(c=>`<div class="chip ${c===activa?'active':''}" onclick="setFiltro('${c}')">${c}</div>`).join('');
-}
+function fmt(n){return'$'+Number(n).toLocaleString('es-AR');}
 
 function render(){
-  renderFilters();
+  const cats=['Todos',...new Set(productos.map(p=>p.cat).filter(Boolean))];
+  document.getElementById('filters').innerHTML=cats.map(c=>`<div class="chip${c===activa?' active':''}" onclick="setFiltro('${c}')">${c}</div>`).join('');
   const all=group();
-  const fil=activa==='Todos'?all:all.filter(p=>p.cat===activa);
-  document.getElementById('toolbar').textContent=`${fil.length} productos · ${fil.reduce((s,p)=>s+p.total,0)} unidades disponibles`;
-  if(!fil.length){document.getElementById('grid').innerHTML='<div class="empty">Sin productos disponibles</div>';return;}
-  window._fil=fil;
-  document.getElementById('grid').innerHTML=fil.map((p,idx)=>{
+  _filtrados=activa==='Todos'?all:all.filter(p=>p.cat===activa);
+  document.getElementById('toolbar').textContent=`${_filtrados.length} productos · ${_filtrados.reduce((s,p)=>s+p.total,0)} unidades disponibles`;
+  if(!_filtrados.length){document.getElementById('grid').innerHTML='<div class="empty">Sin productos disponibles</div>';return;}
+  document.getElementById('grid').innerHTML=_filtrados.map((p,i)=>{
     const emoji=EMOJIS[p.cat]||'👕';
-    const foto=resolvePhoto(p.fotos[0]);
-    console.log("foto"+foto);
-    return `<div class="card" onclick="openModal(${idx})"><div class="img-wrap">${foto?`<img src="${foto}" onerror="this.style.display='none'" loading="lazy">`:''}<span style="font-size:38px">${emoji}</span><span class="badge ${p.total===1?'badge-low':'badge-ok'}">${p.total===1?'Último!':p.total+' disp.'}</span>${p.fotos.length>1?`<span class="foto-count">📷 ${p.fotos.length}</span>`:''}</div><div class="info"><div class="prod-name">${p.desc}</div><div class="prod-color">${p.color}</div><div class="talles">${p.talles.filter(t=>t.stock>0).map(t=>`<span class="talle">${t.talle}</span>`).join('')}</div><div class="price-row"><span class="price">${fmt(p.precio)}</span>${p.precioSin>p.precio?`<span class="price-old">${fmt(p.precioSin)}</span>`:''}</div></div></div>`;
+    const first=resolveUrl(p.media[0]);
+    const count=p.media.filter(m=>resolveUrl(m)).length;
+    const hasVid=p.media.some(m=>isVideo(resolveUrl(m)));
+    return`<div class="card" onclick="openModal(${i})">
+      <div class="img-wrap">
+        ${first?(isVideo(first)?`<video src="${first}" muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:`<img src="${first}" onerror="this.style.display='none'" loading="lazy">`):''}
+        <span style="font-size:38px;position:relative">${emoji}</span>
+        <span class="stock-badge ${p.total===1?'badge-low':'badge-ok'}">${p.total===1?'Último!':p.total+' disp.'}</span>
+        ${count>1?`<span class="foto-count">${hasVid?'🎬':'📷'} ${count}</span>`:''}
+      </div>
+      <div class="info">
+        <div class="prod-name">${p.desc}</div>
+        <div class="prod-color">${p.color}</div>
+        <div class="talles">${p.talles.filter(t=>t.stock>0).map(t=>`<span class="talle">${t.talle}</span>`).join('')}</div>
+        <div class="price-row"><span class="price">${fmt(p.precio)}</span>${p.precioSin>p.precio?`<span class="price-old">${fmt(p.precioSin)}</span>`:''}</div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-function openModal(idx){modalData=window._fil[idx];carIdx=0;renderModal();}
+function openModal(i){modalData=_filtrados[i];carIdx=0;renderModal();}
 
 function renderModal(){
   const p=modalData;
   const emoji=EMOJIS[p.cat]||'👕';
-  const fotos=p.fotos.filter(f=>resolvePhoto(f));
-  const msg=encodeURIComponent(`Hola! Me interesa: *${p.desc}* - ${p.color}. ¿Tienen disponible?`);
-  document.getElementById('modal-container').innerHTML=`<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modal-header"><div class="modal-title">${p.desc}</div><button class="close-btn" onclick="closeModal()">✕</button></div><div class="carousel" id="car">${fotos.length?`<img id="car-img" src="${resolvePhoto(fotos[0])}" alt="${p.desc}">`:`<span class="carousel-emoji">${emoji}</span>`}${fotos.length>1?`<button class="car-btn car-prev" onclick="carMove(-1)">‹</button><button class="car-btn car-next" onclick="carMove(1)">›</button>`:''}</div>${fotos.length>1?`<div class="car-dots">${fotos.map((_,i)=>`<div class="dot ${i===0?'active':''}" onclick="carGo(${i})"></div>`).join('')}</div>`:''}<div class="modal-body"><div class="modal-color">${p.cat} · ${p.color}</div><div class="section-label">Talles disponibles</div><div class="talles-grid">${p.talles.filter(t=>t.stock>0).map(t=>`<span class="talle-pill ok">${t.talle} (${t.stock})</span>`).join('')}${p.talles.filter(t=>t.stock===0).map(t=>`<span class="talle-pill">${t.talle}</span>`).join('')}</div><div class="modal-price">${fmt(p.precio)}</div>${p.precioSin>p.precio?`<div class="modal-price-old">Lista: ${fmt(p.precioSin)}</div>`:''}<a class="wa-btn" href="https://wa.me/${WA}?text=${msg}" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L0 24l6.335-1.528A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.006-1.366l-.36-.213-3.73.9.916-3.648-.235-.374A9.779 9.779 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Consultar por WhatsApp</a></div></div></div>`;
+  const media=p.media.map(resolveUrl).filter(Boolean);
+  const waMsg=encodeURIComponent(`Hola! Me interesa: *${p.desc}* - ${p.color}. ¿Tienen disponible?`);
+
+  const slides=media.length
+    ?media.map((url,i)=>{
+      const vid=isVideo(url);
+      return`<div class="car-slide${i===0?' active':''}">
+        ${vid?`<video src="${url}" playsinline controls style="width:100%;height:100%;object-fit:contain">`:`<img src="${url}" onerror="this.style.display='none'">`}
+      </div>`;
+    }).join('')
+    :`<div class="car-slide active no-media">${emoji}</div>`;
+
+  const thumbs=media.length>1
+    ?`<div class="thumbs">${media.map((url,i)=>{const vid=isVideo(url);return`<div class="thumb${i===0?' active':''}" onclick="carGo(${i})">${vid?`<video src="${url}" muted style="width:100%;height:100%;object-fit:cover"></video><span class="vid-badge">▶</span>`:`<img src="${url}">`}</div>`;}).join('')}</div>`
+    :'';
+
+  document.getElementById('modal-container').innerHTML=`
+  <div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-header"><div class="modal-title">${p.desc}</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+      <div class="carousel">${slides}${media.length>1?`<button class="car-btn car-prev" onclick="carMove(-1)">‹</button><button class="car-btn car-next" onclick="carMove(1)">›</button>`:''}</div>
+      ${thumbs}
+      <div class="modal-body">
+        <div class="modal-color">${p.cat} · ${p.color}</div>
+        <div class="section-label">Talles disponibles</div>
+        <div class="talles-grid">
+          ${p.talles.filter(t=>t.stock>0).map(t=>`<span class="talle-pill ok">${t.talle} (${t.stock})</span>`).join('')}
+          ${p.talles.filter(t=>t.stock===0).map(t=>`<span class="talle-pill">${t.talle}</span>`).join('')}
+        </div>
+        <div class="modal-price">${fmt(p.precio)}</div>
+        ${p.precioSin>p.precio?`<div class="modal-price-old">Precio de lista: ${fmt(p.precioSin)}</div>`:''}
+        <a class="wa-btn" href="https://wa.me/${WA}?text=${waMsg}" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L0 24l6.335-1.528A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.006-1.366l-.36-.213-3.73.9.916-3.648-.235-.374A9.779 9.779 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+          Consultar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>`;
 }
 
-function carMove(dir){const fotos=modalData.fotos.filter(f=>resolvePhoto(f));carIdx=(carIdx+dir+fotos.length)%fotos.length;document.getElementById('car-img').src=resolvePhoto(fotos[carIdx]);document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===carIdx));}
-function carGo(i){carIdx=i;carMove(0);}
+function carGo(i){
+  carIdx=i;
+  document.querySelectorAll('.car-slide').forEach((s,idx)=>{
+    const on=idx===carIdx;
+    s.classList.toggle('active',on);
+    const vid=s.querySelector('video');
+    if(vid){if(on)vid.play().catch(()=>{});else{vid.pause();vid.currentTime=0;}}
+  });
+  document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('active',idx===carIdx));
+}
+function carMove(dir){const media=modalData.media.map(resolveUrl).filter(Boolean);carGo((carIdx+dir+media.length)%media.length);}
 function closeModal(){document.getElementById('modal-container').innerHTML='';}
 function setFiltro(cat){activa=cat;render();}
-
 loadData();
 </script>
 </body>
