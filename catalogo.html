@@ -118,6 +118,7 @@ function render(){
   document.getElementById('grid').innerHTML=fil.map((p,idx)=>{
     const emoji=EMOJIS[p.cat]||'👕';
     const foto=resolvePhoto(p.fotos[0]);
+    console.log("foto"+foto);
     return `<div class="card" onclick="openModal(${idx})"><div class="img-wrap">${foto?`<img src="${foto}" onerror="this.style.display='none'" loading="lazy">`:''}<span style="font-size:38px">${emoji}</span><span class="badge ${p.total===1?'badge-low':'badge-ok'}">${p.total===1?'Último!':p.total+' disp.'}</span>${p.fotos.length>1?`<span class="foto-count">📷 ${p.fotos.length}</span>`:''}</div><div class="info"><div class="prod-name">${p.desc}</div><div class="prod-color">${p.color}</div><div class="talles">${p.talles.filter(t=>t.stock>0).map(t=>`<span class="talle">${t.talle}</span>`).join('')}</div><div class="price-row"><span class="price">${fmt(p.precio)}</span>${p.precioSin>p.precio?`<span class="price-old">${fmt(p.precioSin)}</span>`:''}</div></div></div>`;
   }).join('');
 }
