@@ -87,6 +87,12 @@ function isVideo(url){
   return /\.(mp4|mov|webm|avi)(\?|$)/i.test(url)||url.includes('drive.google.com/file');
 }
 function resolveUrl(f){return(f&&f.startsWith('http'))?f:null;}
+function resolveVideo(url){
+  if(!url)return url;
+  const m=url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if(m)return`https://drive.google.com/uc?export=preview&id=${m[1]}`;
+  return url;
+}
 
 async function loadData(){
   try{
@@ -130,8 +136,8 @@ function render(){
     const hasVid=p.media.some(m=>isVideo(resolveUrl(m)));
     return`<div class="card" onclick="openModal(${i})">
       <div class="img-wrap">
-        ${first?(isVideo(first)?`<video src="${first}" muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:`<img src="${first}" onerror="this.style.display='none'" loading="lazy">`):''}
-        <span style="font-size:38px;position:relative">${emoji}</span>
+        ${first?(isVideo(first)?`<video src="${resolveVideo(first)}" muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:`<img src="${first}" onerror="this.style.display='none'" loading="lazy">`):''}
+        ${!first?`<span style="font-size:38px">${emoji}</span>`:''}
         <span class="stock-badge ${p.total===1?'badge-low':'badge-ok'}">${p.total===1?'Último!':p.total+' disp.'}</span>
         ${count>1?`<span class="foto-count">${hasVid?'🎬':'📷'} ${count}</span>`:''}
       </div>
@@ -157,13 +163,13 @@ function renderModal(){
     ?media.map((url,i)=>{
       const vid=isVideo(url);
       return`<div class="car-slide${i===0?' active':''}">
-        ${vid?`<video src="${url}" playsinline controls style="width:100%;height:100%;object-fit:contain">`:`<img src="${url}" onerror="this.style.display='none'">`}
+        ${vid?`<video src="${resolveVideo(url)}" playsinline controls style="width:100%;height:100%;object-fit:contain">`:`<img src="${url}" onerror="this.style.display='none'">`}
       </div>`;
     }).join('')
     :`<div class="car-slide active no-media">${emoji}</div>`;
 
   const thumbs=media.length>1
-    ?`<div class="thumbs">${media.map((url,i)=>{const vid=isVideo(url);return`<div class="thumb${i===0?' active':''}" onclick="carGo(${i})">${vid?`<video src="${url}" muted style="width:100%;height:100%;object-fit:cover"></video><span class="vid-badge">▶</span>`:`<img src="${url}">`}</div>`;}).join('')}</div>`
+    ?`<div class="thumbs">${media.map((url,i)=>{const vid=isVideo(url);return`<div class="thumb${i===0?' active':''}" onclick="carGo(${i})">${vid?`<video src="${resolveVideo(url)}" muted style="width:100%;height:100%;object-fit:cover"></video><span class="vid-badge">▶</span>`:`<img src="${url}">`}</div>`;}).join('')}</div>`
     :'';
 
   document.getElementById('modal-container').innerHTML=`
