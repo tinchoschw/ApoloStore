@@ -19,7 +19,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
 .card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
 .img-wrap{width:100%;aspect-ratio:1;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:38px;position:relative;overflow:hidden}
-.img-wrap img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.img-wrap img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;background:#fff}
 .foto-count{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:2px 6px;border-radius:99px}
 .stock-badge{position:absolute;top:6px;left:6px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
 .badge-ok{background:#dcfce7;color:#16a34a}
@@ -41,7 +41,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .carousel{position:relative;width:100%;aspect-ratio:1;background:#000;overflow:hidden}
 .car-slide{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
 .car-slide.active{display:flex}
-.car-slide img{width:100%;height:100%;object-fit:cover}
+.car-slide img{width:100%;height:100%;object-fit:contain;background:#fff}
 .car-slide video{width:100%;height:100%;object-fit:contain}
 .car-slide.no-media{background:#f0f0f0;font-size:64px}
 .car-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);color:#fff;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:2}
@@ -67,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 <div class="header">
-  <img src="logo.png" alt="Apolo Store" style="height:100px;width:auto;display:block">
+  <img src="logo.png" alt="Apolo Store" style="height:72px;width:auto;display:block">
   <div class="shop-sub" style="margin-top:4px"><span class="status-dot"></span>Stock actualizado en tiempo real</div>
 </div>
 <div class="filters" id="filters"></div>
@@ -76,8 +76,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="modal-container"></div>
 
 <script>
-const SHEET_ID='1MU9D62GiFUwtz1G5iKzX9B1Vben0o9yLECVjCskHzpE';
-const GID='843068575';
+const SHEET_ID='1dfQ2Sys3vZSO4HLdF3XMxkN3bHlF3jaUS84VfIINiGc';
+const GID='1515490805';
 const WA='5491130025002';
 const EMOJIS={'Camisas':'👔','Camisacos':'🧥','Camperitas':'🫰','Buzos Con capucha':'🥷','Buzos Cuello redondo':'👕','Pantalones':'👖','Bermudas':'🩳','Remeras':'👕'};
 let productos=[],activa='Todos',_filtrados=[],carIdx=0,modalData=null;
@@ -100,8 +100,15 @@ async function loadData(){
     if(!r.ok)throw new Error('HTTP '+r.status);
     const rows=parseCSV(await r.text());
     const h=rows[0].map(x=>x.trim().toLowerCase());
-    const i={cod:h.indexOf('codigo'),cat:h.indexOf('categoria'),desc:h.indexOf('descripcion'),color:h.indexOf('color'),talle:h.indexOf('talle'),stock:h.indexOf('stock'),precio:h.indexOf('precio'),precioSin:h.indexOf('precio sin descuento'),f1:h.indexOf('columna 2'),f2:h.indexOf('columna 1'),f3:h.indexOf('columna 3')};
-    productos=rows.slice(1).filter(r=>r[i.cod]?.trim()).map(r=>({cod:r[i.cod]?.trim(),cat:r[i.cat]?.trim(),desc:r[i.desc]?.trim(),color:r[i.color]?.trim(),talle:r[i.talle]?.trim(),stock:parseInt(r[i.stock])||0,precio:parseInt(r[i.precio])||0,precioSin:parseInt(r[i.precioSin])||0,media:[r[i.f1],r[i.f2],r[i.f3]].map(f=>f?.trim()).filter(f=>f&&!f.includes('VENDIDO')&&!f.startsWith('¡'))}));
+    const i={cod:h.indexOf('codigo'),cat:h.indexOf('categoria'),desc:h.indexOf('descripcion'),color:h.indexOf('color'),talle:h.indexOf('talle'),stock:h.indexOf('stock'),precio:h.indexOf('precio'),precioSin:h.indexOf('precio sin descuento'),fMain:h.indexOf('columna 2'),fExtra:h.indexOf('columna 1'),fVid:h.indexOf('columna 3')};
+    productos=rows.slice(1).filter(r=>r[i.cod]?.trim()).map(r=>{
+      const clean=v=>(v||'').trim();
+      const splitUrls=v=>clean(v).split(',').map(x=>x.trim()).filter(x=>x.startsWith('http'));
+      const main=clean(r[i.fMain]).startsWith('http')?[clean(r[i.fMain])]:[];
+      const extras=splitUrls(r[i.fExtra]);
+      const vids=splitUrls(r[i.fVid]);
+      return{cod:clean(r[i.cod]),cat:clean(r[i.cat]),desc:clean(r[i.desc]),color:clean(r[i.color]),talle:clean(r[i.talle]),stock:parseInt(r[i.stock])||0,precio:parseInt(r[i.precio])||0,precioSin:parseInt(r[i.precioSin])||0,mainImg:main[0]||null,media:[...main,...extras,...vids].filter(Boolean)};
+    });
     render();
   }catch(e){
     document.getElementById('grid').innerHTML=`<div class="error">No se pudo cargar el catálogo.<br><small>${e.message}</small><br><br>Verificá que la hoja "Productos" esté publicada en la web.</div>`;
@@ -116,7 +123,7 @@ function parseCSV(t){
 
 function group(){
   const map={};
-  productos.forEach(p=>{const k=p.desc+'||'+p.color;if(!map[k])map[k]={cat:p.cat,desc:p.desc,color:p.color,precio:p.precio,precioSin:p.precioSin,talles:[],media:p.media,total:0};map[k].talles.push({talle:p.talle,stock:p.stock});map[k].total+=p.stock;if(p.media.length>map[k].media.length)map[k].media=p.media;});
+  productos.forEach(p=>{const k=p.desc+'||'+p.color;if(!map[k])map[k]={cat:p.cat,desc:p.desc,color:p.color,precio:p.precio,precioSin:p.precioSin,talles:[],mainImg:p.mainImg,media:p.media,total:0};map[k].talles.push({talle:p.talle,stock:p.stock});map[k].total+=p.stock;if(p.media.length>map[k].media.length){map[k].media=p.media;map[k].mainImg=p.mainImg;}});
   return Object.values(map).filter(p=>p.total>0);
 }
 
@@ -131,7 +138,7 @@ function render(){
   if(!_filtrados.length){document.getElementById('grid').innerHTML='<div class="empty">Sin productos disponibles</div>';return;}
   document.getElementById('grid').innerHTML=_filtrados.map((p,i)=>{
     const emoji=EMOJIS[p.cat]||'👕';
-    const first=resolveUrl(p.media[0]);
+    const first=p.mainImg||null;
     const count=p.media.filter(m=>resolveUrl(m)).length;
     const hasVid=p.media.some(m=>isVideo(resolveUrl(m)));
     return`<div class="card" onclick="openModal(${i})">
