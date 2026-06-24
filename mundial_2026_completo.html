@@ -370,6 +370,8 @@ function isPastDay(dt) {
 // openfootball no tiene campo "live", así que lo inferimos por hora + score
 function getStatus(match, dt) {
   const hasScore = match.score && match.score.ft;
+  //alert('match: ' + JSON.stringify(match) + '\ndt: ' + dt);
+  console.log('match:', match, 'dt:', dt);
   if (hasScore) return 'done';
   if (!dt) return 'next';
   const now = Date.now();
