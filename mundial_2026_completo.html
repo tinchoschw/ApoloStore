@@ -1,264 +1,291 @@
 
+<h2 class="sr-only">Mundial 2026 - Fixture y tabla de grupos en tiempo real</h2>
+
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-.header { text-align: center; padding: 1.2rem 0 0.5rem; }
+.header { text-align: center; padding: 1.2rem 0 0.6rem; }
 .header h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
-.header p { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
-.nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 1rem 1rem 0.5rem; }
+.header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 0.6rem 1rem 0.5rem; }
 .nav button { font-size: 13px; padding: 6px 14px; border-radius: 99px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
 .nav button.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
 .section { display: none; padding: 0.5rem 1rem 1.5rem; }
 .section.visible { display: block; }
-.hoy-badge { display: inline-block; background: var(--color-background-secondary); color: var(--color-text-secondary); font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 99px; border: 0.5px solid var(--color-border-secondary); margin: 0.5rem 0 1rem; }
-.match-card { background: var(--color-background-primary); border: 0.5px solid ; border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; border-color: cadetblue; }
-.match-card.finalizado { opacity: 0.75; }
-.match-card.en-vivo { border-left: 3px solid #E53935; }
-.match-card.proximo { border-left: 3px solid var(--color-border-tertiary); }
-.match-card.hoy-fix { border-left: 3px solid #43A047; }
-.match-card.jugado { opacity: 0.8; }
-.estado-pill { font-size: 20px; font-weight: 500; padding: 2px 9px; border-radius: 99px; display: inline-block; margin-bottom: 8px; }
-.pill-final { background: var(--color-background-secondary); color: var(--color-text-tertiary); }
-.pill-prox { background: #E3F2FD; color: #1565C0; }
-.match-equipos { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.equipo { text-align: center; flex: 1; }
-.equipo-nombre { font-size: 22px; font-weight: 500; color: var(--color-text-primary); display: block; }
-.marcador-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 6px 18px; text-align: center; min-width: 80px; }
-.marcador-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
-.marcador-vs { font-size: 22px; color: var(--color-text-tertiary); }
-.match-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 20px; color: var(--color-text-secondary); }
-.canal-badge { background: #E3F2FD; color: #1565C0; font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 99px; }
-.goles-detalle { font-size: 20px; color: var(--color-text-tertiary); margin-top: 5px; }
-.dia-header { font-size: 20px; font-weight: 500; color: var(--color-text-secondary); margin: 1.2rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.dia-header:first-child { margin-top: 0; }
-.hoy-label { display: inline-block; background: #E8F5E9; color: #2E7D32; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; margin-left: 8px; vertical-align: middle; }
-.grupos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.match-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 0.9rem 1.1rem; margin-bottom: 8px; }
+.match-card.live { border-left: 3px solid #C62828; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0; }
+.match-card.upcoming { border-left: 3px solid #1565C0; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0; }
+.match-card.closed { opacity: 0.72; }
+.pill { font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 99px; display: inline-block; margin-bottom: 7px; }
+.pill-live { background: #FFEBEE; color: #C62828; }
+.pill-upcoming { background: #E3F2FD; color: #1565C0; }
+.pill-closed { background: var(--color-background-secondary); color: var(--color-text-tertiary); }
+.match-row { display: flex; align-items: center; gap: 8px; }
+.team { flex: 1; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.team.right { text-align: right; }
+.score-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 5px 14px; text-align: center; min-width: 72px; font-size: 19px; font-weight: 500; color: var(--color-text-primary); }
+.score-box.time { font-size: 14px; color: var(--color-text-secondary); }
+.match-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 7px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 11px; color: var(--color-text-secondary); }
+.canal { background: #E3F2FD; color: #1565C0; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; }
+.minute { color: #C62828; font-weight: 500; }
+.day-header { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); margin: 1.1rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 0.5px solid var(--color-border-tertiary); padding-bottom: 4px; }
+.grupos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 10px; }
 .grupo-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
-.grupo-titulo { background: var(--color-background-secondary); padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-bottom: 0.5px solid var(--color-border-tertiary); }
-.grupo-tabla { width: 100%; border-collapse: collapse; font-size: 13px; }
-.grupo-tabla th { padding: 6px 10px; color: var(--color-text-tertiary); font-weight: 400; font-size: 11px; text-align: center; }
-.grupo-tabla th:first-child { text-align: left; }
-.grupo-tabla td { padding: 7px 10px; color: var(--color-text-primary); text-align: center; border-top: 0.5px solid var(--color-border-tertiary); }
-.grupo-tabla td:first-child { text-align: left; }
-.grupo-tabla tr:hover { background: var(--color-background-secondary); }
-.clasificado-1 { color: #1565C0; font-weight: 500; }
-.clasificado-2 { color: #2E7D32; font-weight: 500; }
-.eliminado { color: var(--color-text-tertiary); text-decoration: line-through; }
-.pos-num { font-size: 11px; color: var(--color-text-tertiary); margin-right: 4px; }
-.leyenda { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; font-size: 12px; color: var(--color-text-secondary); margin: 0.5rem 0 1rem; }
+.grupo-titulo { background: var(--color-background-secondary); padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+.gt { width: 100%; border-collapse: collapse; font-size: 12px; }
+.gt th { padding: 5px 10px; color: var(--color-text-tertiary); font-weight: 400; font-size: 11px; text-align: center; }
+.gt th:first-child { text-align: left; }
+.gt td { padding: 6px 10px; color: var(--color-text-primary); text-align: center; border-top: 0.5px solid var(--color-border-tertiary); }
+.gt td:first-child { text-align: left; }
+.c1 { color: #1565C0; font-weight: 500; }
+.c2 { color: #2E7D32; font-weight: 500; }
+.elim { color: var(--color-text-tertiary); text-decoration: line-through; }
+.pn { font-size: 10px; color: var(--color-text-tertiary); margin-right: 3px; }
+.leyenda { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: 12px; color: var(--color-text-secondary); margin: 0.4rem 0 0.9rem; }
 .leyenda span { display: flex; align-items: center; gap: 4px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-.dot.azul { background: #1565C0; }
-.dot.verde { background: #2E7D32; }
-.dot.gris { background: #999; }
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.loading { text-align: center; padding: 2rem; color: var(--color-text-secondary); font-size: 14px; }
+.error-msg { text-align: center; padding: 1.5rem; color: var(--color-text-danger, #C62828); font-size: 13px; background: var(--color-background-danger, #FFEBEE); border-radius: var(--border-radius-md); margin: 1rem 0; }
+.refresh-btn { display: flex; align-items: center; gap: 6px; margin: 0 auto 0.5rem; font-size: 12px; color: var(--color-text-secondary); background: none; border: 0.5px solid var(--color-border-secondary); border-radius: 99px; padding: 4px 12px; cursor: pointer; }
+.updated { text-align: center; font-size: 11px; color: var(--color-text-tertiary); margin-top: 0.5rem; }
+.hoy-badge { display: inline-block; background: var(--color-background-secondary); color: var(--color-text-secondary); font-size: 12px; padding: 4px 12px; border-radius: 99px; border: 0.5px solid var(--color-border-secondary); margin-bottom: 0.8rem; }
 </style>
 
 <div class="header">
-  <h1>⚽ Mundial 2026</h1>
+  <h1><i class="ti ti-ball-football" aria-hidden="true"></i> Mundial 2026</h1>
   <p>USA · Canadá · México — Fase de grupos</p>
 </div>
 
 <div class="nav">
-  <button class="active" onclick="mostrar('hoy', this)">🔴 Hoy</button>
-  <button onclick="mostrar('fixture', this)">Fixture completo</button>
-  <button onclick="mostrar('grupos', this)">Tabla de grupos</button>
+  <button class="active" onclick="mostrar('hoy',this)"><i class="ti ti-radio" aria-hidden="true"></i> Hoy</button>
+  <button onclick="mostrar('fixture',this)">Fixture</button>
+  <button onclick="mostrar('grupos',this)">Grupos</button>
 </div>
 
-<!-- HOY -->
 <div id="sec-hoy" class="section visible">
-  <div style="text-align:center"><span class="hoy-badge">Martes 23 de junio · Jornada 2 · 5 partidos</span></div>
-
-  <div class="match-card finalizado">
-    <span class="estado-pill pill-final">✓ Finalizado</span>
-    <div class="match-equipos">
-      <div class="equipo"><span class="equipo-nombre">Jordania</span></div>
-      <div class="marcador-box"><span class="marcador-num">1 - 2</span></div>
-      <div class="equipo"><span class="equipo-nombre">Argelia</span></div>
-    </div>
-    <div class="goles-detalle">Grupo J · San Francisco · 01:00 hs</div>
-    <div class="match-meta"><span></span><span class="canal-badge">TyC / DSports</span></div>
-  </div>
-
-  <div class="match-card finalizado">
-    <span class="estado-pill pill-final">✓ Finalizado</span>
-    <div class="match-equipos">
-      <div class="equipo"><span class="equipo-nombre">Portugal</span></div>
-      <div class="marcador-box"><span class="marcador-num">5 - 0</span></div>
-      <div class="equipo"><span class="equipo-nombre">Uzbekistán</span></div>
-    </div>
-    <div class="goles-detalle">Goles min. 6', 17', 39', 60' y 87'</div>
-    <div class="match-meta"><span>Grupo K · Houston · 14:00 hs</span><span class="canal-badge">TyC / DSports</span></div>
-  </div>
-
-  <div class="match-card proximo">
-    <span class="estado-pill pill-prox">⏰ En aprox. 1 hora</span>
-    <div class="match-equipos">
-      <div class="equipo"><span class="equipo-nombre">Inglaterra</span></div>
-      <div class="marcador-box"><span class="marcador-vs">17:00</span></div>
-      <div class="equipo"><span class="equipo-nombre">Ghana</span></div>
-    </div>
-    <div class="match-meta"><span>Grupo L · Boston</span><span class="canal-badge">TyC / DSports</span></div>
-  </div>
-
-  <div class="match-card proximo">
-    <span class="estado-pill pill-prox">⏰ Próximo</span>
-    <div class="match-equipos">
-      <div class="equipo"><span class="equipo-nombre">Panamá</span></div>
-      <div class="marcador-box"><span class="marcador-vs">20:00</span></div>
-      <div class="equipo"><span class="equipo-nombre">Croacia</span></div>
-    </div>
-    <div class="match-meta"><span>Grupo L · Toronto</span><span class="canal-badge">TyC / DSports</span></div>
-  </div>
-
-  <div class="match-card proximo">
-    <span class="estado-pill pill-prox">⏰ Próximo</span>
-    <div class="match-equipos">
-      <div class="equipo"><span class="equipo-nombre">Colombia</span></div>
-      <div class="marcador-box"><span class="marcador-vs">23:00</span></div>
-      <div class="equipo"><span class="equipo-nombre">RD Congo</span></div>
-    </div>
-    <div class="match-meta"><span>Grupo K · Guadalajara</span><span class="canal-badge">TyC / DSports</span></div>
-  </div>
-
-  <p style="text-align:center; font-size: 12px; color: var(--color-text-tertiary); margin-top: 0.8rem;">Resultados al momento de la consulta · Horarios en Argentina (GMT-3)</p>
+  <div style="text-align:center"><span class="hoy-badge" id="hoy-fecha">Cargando...</span></div>
+  <div id="hoy-content"><div class="loading"><i class="ti ti-loader-2" aria-hidden="true"></i> Consultando resultados...</div></div>
+  <div class="updated" id="hoy-updated"></div>
 </div>
 
-<!-- FIXTURE -->
 <div id="sec-fixture" class="section">
-  <div class="dia-header">11 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">México</span></div><div class="marcador-box"><span class="marcador-num">2 - 0</span></div><div class="equipo"><span class="equipo-nombre">Sudáfrica</span></div></div><div class="match-meta"><span>Grupo A</span></div></div>
-
-  <div class="dia-header">12 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Corea del Sur</span></div><div class="marcador-box"><span class="marcador-num">2 - 1</span></div><div class="equipo"><span class="equipo-nombre">Rep. Checa</span></div></div><div class="match-meta"><span>Grupo A</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Canadá</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Bosnia y Herz.</span></div></div><div class="match-meta"><span>Grupo B</span></div></div>
-
-  <div class="dia-header">13 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">EE.UU.</span></div><div class="marcador-box"><span class="marcador-num">4 - 1</span></div><div class="equipo"><span class="equipo-nombre">Paraguay</span></div></div><div class="match-meta"><span>Grupo D</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Qatar</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Suiza</span></div></div><div class="match-meta"><span>Grupo B</span></div></div>
-
-  <div class="dia-header">14 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Brasil</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Marruecos</span></div></div><div class="match-meta"><span>Grupo C</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Haití</span></div><div class="marcador-box"><span class="marcador-num">0 - 1</span></div><div class="equipo"><span class="equipo-nombre">Escocia</span></div></div><div class="match-meta"><span>Grupo C</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Alemania</span></div><div class="marcador-box"><span class="marcador-num">7 - 1</span></div><div class="equipo"><span class="equipo-nombre">Curazao</span></div></div><div class="match-meta"><span>Grupo E</span></div></div>
-
-  <div class="dia-header">15 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Australia</span></div><div class="marcador-box"><span class="marcador-num">2 - 0</span></div><div class="equipo"><span class="equipo-nombre">Turquía</span></div></div><div class="match-meta"><span>Grupo D</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Costa de Marfil</span></div><div class="marcador-box"><span class="marcador-num">1 - 0</span></div><div class="equipo"><span class="equipo-nombre">Ecuador</span></div></div><div class="match-meta"><span>Grupo E</span></div></div>
-
-  <div class="dia-header">16 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Argentina 🇦🇷</span></div><div class="marcador-box"><span class="marcador-num">3 - 0</span></div><div class="equipo"><span class="equipo-nombre">Argelia</span></div></div><div class="match-meta"><span>Grupo J · Messi x3 🐐</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Países Bajos</span></div><div class="marcador-box"><span class="marcador-num">2 - 2</span></div><div class="equipo"><span class="equipo-nombre">Japón</span></div></div><div class="match-meta"><span>Grupo F</span></div></div>
-
-  <div class="dia-header">17 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Suecia</span></div><div class="marcador-box"><span class="marcador-num">5 - 1</span></div><div class="equipo"><span class="equipo-nombre">Túnez</span></div></div><div class="match-meta"><span>Grupo F</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Austria</span></div><div class="marcador-box"><span class="marcador-num">3 - 1</span></div><div class="equipo"><span class="equipo-nombre">Jordania</span></div></div><div class="match-meta"><span>Grupo J</span></div></div>
-
-  <div class="dia-header">18 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Portugal</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">RD Congo</span></div></div><div class="match-meta"><span>Grupo K</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Colombia</span></div><div class="marcador-box"><span class="marcador-num">3 - 1</span></div><div class="equipo"><span class="equipo-nombre">Uzbekistán</span></div></div><div class="match-meta"><span>Grupo K</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Bélgica</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Egipto</span></div></div><div class="match-meta"><span>Grupo G</span></div></div>
-
-  <div class="dia-header">19 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Irán</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Nueva Zelanda</span></div></div><div class="match-meta"><span>Grupo G</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">España</span></div><div class="marcador-box"><span class="marcador-num">0 - 0</span></div><div class="equipo"><span class="equipo-nombre">Cabo Verde</span></div></div><div class="match-meta"><span>Grupo H</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Arabia Saudita</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Uruguay</span></div></div><div class="match-meta"><span>Grupo H</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Francia</span></div><div class="marcador-box"><span class="marcador-num">3 - 1</span></div><div class="equipo"><span class="equipo-nombre">Senegal</span></div></div><div class="match-meta"><span>Grupo I</span></div></div>
-
-  <div class="dia-header">20 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Irak</span></div><div class="marcador-box"><span class="marcador-num">1 - 4</span></div><div class="equipo"><span class="equipo-nombre">Noruega</span></div></div><div class="match-meta"><span>Grupo I · Haaland</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Inglaterra</span></div><div class="marcador-box"><span class="marcador-num">4 - 2</span></div><div class="equipo"><span class="equipo-nombre">Croacia</span></div></div><div class="match-meta"><span>Grupo L</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Ghana</span></div><div class="marcador-box"><span class="marcador-num">1 - 0</span></div><div class="equipo"><span class="equipo-nombre">Panamá</span></div></div><div class="match-meta"><span>Grupo L</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Alemania</span></div><div class="marcador-box"><span class="marcador-num">2 - 1</span></div><div class="equipo"><span class="equipo-nombre">Costa de Marfil</span></div></div><div class="match-meta"><span>Grupo E</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Ecuador</span></div><div class="marcador-box"><span class="marcador-num">0 - 0</span></div><div class="equipo"><span class="equipo-nombre">Curazao</span></div></div><div class="match-meta"><span>Grupo E</span></div></div>
-
-  <div class="dia-header">21 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">México</span></div><div class="marcador-box"><span class="marcador-num">1 - 0</span></div><div class="equipo"><span class="equipo-nombre">Corea del Sur</span></div></div><div class="match-meta"><span>Grupo A · ✅ México clasifica</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Rep. Checa</span></div><div class="marcador-box"><span class="marcador-num">1 - 1</span></div><div class="equipo"><span class="equipo-nombre">Sudáfrica</span></div></div><div class="match-meta"><span>Grupo A</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Canadá</span></div><div class="marcador-box"><span class="marcador-num">6 - 0</span></div><div class="equipo"><span class="equipo-nombre">Qatar</span></div></div><div class="match-meta"><span>Grupo B</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Suiza</span></div><div class="marcador-box"><span class="marcador-num">4 - 1</span></div><div class="equipo"><span class="equipo-nombre">Bosnia y Herz.</span></div></div><div class="match-meta"><span>Grupo B</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">España</span></div><div class="marcador-box"><span class="marcador-num">4 - 0</span></div><div class="equipo"><span class="equipo-nombre">Arabia Saudita</span></div></div><div class="match-meta"><span>Grupo H</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Uruguay</span></div><div class="marcador-box"><span class="marcador-num">2 - 2</span></div><div class="equipo"><span class="equipo-nombre">Cabo Verde</span></div></div><div class="match-meta"><span>Grupo H</span></div></div>
-
-  <div class="dia-header">22 Jun (jugado)</div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Argentina 🇦🇷</span></div><div class="marcador-box"><span class="marcador-num">2 - 0</span></div><div class="equipo"><span class="equipo-nombre">Austria</span></div></div><div class="match-meta"><span>Grupo J · ✅ Argentina clasifica · Récord Messi</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Francia</span></div><div class="marcador-box"><span class="marcador-num">3 - 0</span></div><div class="equipo"><span class="equipo-nombre">Irak</span></div></div><div class="match-meta"><span>Grupo I · Mbappé x2</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Noruega</span></div><div class="marcador-box"><span class="marcador-num">3 - 2</span></div><div class="equipo"><span class="equipo-nombre">Senegal</span></div></div><div class="match-meta"><span>Grupo I · ✅ Noruega y Francia clasifican</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">EE.UU.</span></div><div class="marcador-box"><span class="marcador-num">2 - 0</span></div><div class="equipo"><span class="equipo-nombre">Australia</span></div></div><div class="match-meta"><span>Grupo D · ✅ EE.UU. clasifica</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Turquía</span></div><div class="marcador-box"><span class="marcador-num">1 - 0</span></div><div class="equipo"><span class="equipo-nombre">Paraguay</span></div></div><div class="match-meta"><span>Grupo D</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Países Bajos</span></div><div class="marcador-box"><span class="marcador-num">5 - 1</span></div><div class="equipo"><span class="equipo-nombre">Suecia</span></div></div><div class="match-meta"><span>Grupo F</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Túnez</span></div><div class="marcador-box"><span class="marcador-num">0 - 4</span></div><div class="equipo"><span class="equipo-nombre">Japón</span></div></div><div class="match-meta"><span>Grupo F · ❌ Túnez eliminado</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Bélgica</span></div><div class="marcador-box"><span class="marcador-num">0 - 0</span></div><div class="equipo"><span class="equipo-nombre">Irán</span></div></div><div class="match-meta"><span>Grupo G</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Nueva Zelanda</span></div><div class="marcador-box"><span class="marcador-num">1 - 3</span></div><div class="equipo"><span class="equipo-nombre">Egipto</span></div></div><div class="match-meta"><span>Grupo G</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Brasil</span></div><div class="marcador-box"><span class="marcador-num">3 - 0</span></div><div class="equipo"><span class="equipo-nombre">Haití</span></div></div><div class="match-meta"><span>Grupo C · ❌ Haití eliminado</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Escocia</span></div><div class="marcador-box"><span class="marcador-num">1 - 0</span></div><div class="equipo"><span class="equipo-nombre">Marruecos</span></div></div><div class="match-meta"><span>Grupo C</span></div></div>
-
-  <div class="dia-header">23 Jun — HOY <span class="hoy-label">EN CURSO</span></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Jordania</span></div><div class="marcador-box"><span class="marcador-num">1 - 2</span></div><div class="equipo"><span class="equipo-nombre">Argelia</span></div></div><div class="match-meta"><span>Grupo J · 01:00 hs</span></div></div>
-  <div class="match-card jugado"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Portugal</span></div><div class="marcador-box"><span class="marcador-num">5 - 0</span></div><div class="equipo"><span class="equipo-nombre">Uzbekistán</span></div></div><div class="match-meta"><span>Grupo K · 14:00 hs</span></div></div>
-  <div class="match-card hoy-fix"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Inglaterra</span></div><div class="marcador-box"><span class="marcador-vs">17:00</span></div><div class="equipo"><span class="equipo-nombre">Ghana</span></div></div><div class="match-meta"><span>Grupo L · Boston</span><span class="canal-badge">TyC / DSports</span></div></div>
-  <div class="match-card hoy-fix"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Panamá</span></div><div class="marcador-box"><span class="marcador-vs">20:00</span></div><div class="equipo"><span class="equipo-nombre">Croacia</span></div></div><div class="match-meta"><span>Grupo L · Toronto</span><span class="canal-badge">TyC / DSports</span></div></div>
-  <div class="match-card hoy-fix"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Colombia</span></div><div class="marcador-box"><span class="marcador-vs">23:00</span></div><div class="equipo"><span class="equipo-nombre">RD Congo</span></div></div><div class="match-meta"><span>Grupo K · Guadalajara</span><span class="canal-badge">TyC / DSports</span></div></div>
-
-  <div class="dia-header">24 Jun</div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Suiza</span></div><div class="marcador-box"><span class="marcador-vs">16:00</span></div><div class="equipo"><span class="equipo-nombre">Canadá</span></div></div><div class="match-meta"><span>Grupo B · Vancouver</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Bosnia y Herz.</span></div><div class="marcador-box"><span class="marcador-vs">16:00</span></div><div class="equipo"><span class="equipo-nombre">Qatar</span></div></div><div class="match-meta"><span>Grupo B · Seattle</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Escocia</span></div><div class="marcador-box"><span class="marcador-vs">19:00</span></div><div class="equipo"><span class="equipo-nombre">Brasil</span></div></div><div class="match-meta"><span>Grupo C · Miami</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Marruecos</span></div><div class="marcador-box"><span class="marcador-vs">19:00</span></div><div class="equipo"><span class="equipo-nombre">Haití</span></div></div><div class="match-meta"><span>Grupo C · Atlanta</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Rep. Checa</span></div><div class="marcador-box"><span class="marcador-vs">22:00</span></div><div class="equipo"><span class="equipo-nombre">México</span></div></div><div class="match-meta"><span>Grupo A · Azteca</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Sudáfrica</span></div><div class="marcador-box"><span class="marcador-vs">22:00</span></div><div class="equipo"><span class="equipo-nombre">Corea del Sur</span></div></div><div class="match-meta"><span>Grupo A · Monterrey</span></div></div>
-
-  <div class="dia-header">25 Jun</div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Ecuador</span></div><div class="marcador-box"><span class="marcador-vs">17:00</span></div><div class="equipo"><span class="equipo-nombre">Alemania</span></div></div><div class="match-meta"><span>Grupo E · Nueva York</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Curazao</span></div><div class="marcador-box"><span class="marcador-vs">17:00</span></div><div class="equipo"><span class="equipo-nombre">Costa de Marfil</span></div></div><div class="match-meta"><span>Grupo E · Philadelphia</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Túnez</span></div><div class="marcador-box"><span class="marcador-vs">20:00</span></div><div class="equipo"><span class="equipo-nombre">Países Bajos</span></div></div><div class="match-meta"><span>Grupo F · Kansas City</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Japón</span></div><div class="marcador-box"><span class="marcador-vs">20:00</span></div><div class="equipo"><span class="equipo-nombre">Suecia</span></div></div><div class="match-meta"><span>Grupo F · Dallas</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Paraguay</span></div><div class="marcador-box"><span class="marcador-vs">23:00</span></div><div class="equipo"><span class="equipo-nombre">Australia</span></div></div><div class="match-meta"><span>Grupo D · San Francisco</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Turquía</span></div><div class="marcador-box"><span class="marcador-vs">23:00</span></div><div class="equipo"><span class="equipo-nombre">EE.UU.</span></div></div><div class="match-meta"><span>Grupo D · Los Ángeles</span></div></div>
-
-  <div class="dia-header">26 Jun</div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Noruega</span></div><div class="marcador-box"><span class="marcador-vs">14:00</span></div><div class="equipo"><span class="equipo-nombre">Francia</span></div></div><div class="match-meta"><span>Grupo I · Boston</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Senegal</span></div><div class="marcador-box"><span class="marcador-vs">14:00</span></div><div class="equipo"><span class="equipo-nombre">Irak</span></div></div><div class="match-meta"><span>Grupo I · Toronto</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Cabo Verde</span></div><div class="marcador-box"><span class="marcador-vs">21:00</span></div><div class="equipo"><span class="equipo-nombre">Arabia Saudita</span></div></div><div class="match-meta"><span>Grupo H · Houston</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Uruguay</span></div><div class="marcador-box"><span class="marcador-vs">21:00</span></div><div class="equipo"><span class="equipo-nombre">España</span></div></div><div class="match-meta"><span>Grupo H · Guadalajara</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Egipto</span></div><div class="marcador-box"><span class="marcador-vs">00:00</span></div><div class="equipo"><span class="equipo-nombre">Irán</span></div></div><div class="match-meta"><span>Grupo G · Seattle</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Nueva Zelanda</span></div><div class="marcador-box"><span class="marcador-vs">00:00</span></div><div class="equipo"><span class="equipo-nombre">Bélgica</span></div></div><div class="match-meta"><span>Grupo G · Vancouver</span></div></div>
-
-  <div class="dia-header">27 Jun — Última fecha grupos</div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Panamá</span></div><div class="marcador-box"><span class="marcador-vs">18:00</span></div><div class="equipo"><span class="equipo-nombre">Inglaterra</span></div></div><div class="match-meta"><span>Grupo L · Nueva Jersey</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Croacia</span></div><div class="marcador-box"><span class="marcador-vs">18:00</span></div><div class="equipo"><span class="equipo-nombre">Ghana</span></div></div><div class="match-meta"><span>Grupo L · Philadelphia</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Colombia</span></div><div class="marcador-box"><span class="marcador-vs">20:30</span></div><div class="equipo"><span class="equipo-nombre">Portugal</span></div></div><div class="match-meta"><span>Grupo K · Miami</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">RD Congo</span></div><div class="marcador-box"><span class="marcador-vs">20:30</span></div><div class="equipo"><span class="equipo-nombre">Uzbekistán</span></div></div><div class="match-meta"><span>Grupo K · Atlanta</span></div></div>
-  <div class="match-card"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Argelia</span></div><div class="marcador-box"><span class="marcador-vs">23:00</span></div><div class="equipo"><span class="equipo-nombre">Austria</span></div></div><div class="match-meta"><span>Grupo J · Kansas City</span></div></div>
-  <div class="match-card hoy-fix"><div class="match-equipos"><div class="equipo"><span class="equipo-nombre">Jordania</span></div><div class="marcador-box"><span class="marcador-vs">23:00</span></div><div class="equipo"><span class="equipo-nombre">Argentina 🇦🇷</span></div></div><div class="match-meta"><span>Grupo J · Dallas</span><span class="canal-badge">TyC / Telefe / TV Pública</span></div></div>
+  <button class="refresh-btn" onclick="loadFixture()"><i class="ti ti-refresh" aria-hidden="true"></i> Actualizar</button>
+  <div id="fixture-content"><div class="loading">Cargando fixture...</div></div>
 </div>
 
-<!-- GRUPOS -->
 <div id="sec-grupos" class="section">
   <div class="leyenda">
-    <span><span class="dot azul"></span> 1º clasifica</span>
-    <span><span class="dot verde"></span> 2º clasifica</span>
-    <span><span class="dot gris"></span> Eliminado</span>
+    <span><span class="dot" style="background:#1565C0"></span> 1° clasifica</span>
+    <span><span class="dot" style="background:#2E7D32"></span> 2° clasifica</span>
+    <span><span class="dot" style="background:#999"></span> Eliminado</span>
   </div>
-  <div class="grupos-grid">
-    <div class="grupo-card"><div class="grupo-titulo">Grupo A</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">México ✅</span></td><td>2</td><td>+3</td><td>6</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Corea del Sur</span></td><td>2</td><td>0</td><td>3</td></tr><tr><td><span class="pos-num">3</span>Rep. Checa</td><td>2</td><td>-1</td><td>1</td></tr><tr><td><span class="pos-num">4</span>Sudáfrica</td><td>2</td><td>-2</td><td>1</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo B</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Canadá</span></td><td>2</td><td>+6</td><td>4</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Suiza</span></td><td>2</td><td>+3</td><td>4</td></tr><tr><td><span class="pos-num">3</span>Bosnia y Herz.</td><td>2</td><td>-3</td><td>1</td></tr><tr><td><span class="pos-num">4</span>Qatar</td><td>2</td><td>-6</td><td>1</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo C</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Brasil</span></td><td>2</td><td>+3</td><td>4</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Marruecos</span></td><td>2</td><td>+1</td><td>4</td></tr><tr><td><span class="pos-num">3</span>Escocia</td><td>2</td><td>0</td><td>3</td></tr><tr><td><span class="pos-num">4</span><span class="eliminado">Haití ❌</span></td><td>2</td><td>-4</td><td>0</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo D</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">EE.UU. ✅</span></td><td>2</td><td>+5</td><td>6</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Australia</span></td><td>2</td><td>0</td><td>3</td></tr><tr><td><span class="pos-num">3</span>Turquía</td><td>2</td><td>-2</td><td>3</td></tr><tr><td><span class="pos-num">4</span><span class="eliminado">Paraguay ❌</span></td><td>2</td><td>-3</td><td>0</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo E</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Alemania ✅</span></td><td>2</td><td>+7</td><td>6</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Costa de Marfil</span></td><td>2</td><td>0</td><td>3</td></tr><tr><td><span class="pos-num">3</span>Ecuador</td><td>2</td><td>-1</td><td>1</td></tr><tr><td><span class="pos-num">4</span>Curazao</td><td>2</td><td>-6</td><td>1</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo F</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Países Bajos</span></td><td>2</td><td>+4</td><td>4</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Japón</span></td><td>2</td><td>+4</td><td>4</td></tr><tr><td><span class="pos-num">3</span>Suecia</td><td>2</td><td>0</td><td>3</td></tr><tr><td><span class="pos-num">4</span><span class="eliminado">Túnez ❌</span></td><td>2</td><td>-8</td><td>0</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo G</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Egipto</span></td><td>2</td><td>+2</td><td>4</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Irán</span></td><td>2</td><td>0</td><td>2</td></tr><tr><td><span class="pos-num">3</span>Bélgica</td><td>2</td><td>0</td><td>2</td></tr><tr><td><span class="pos-num">4</span>Nueva Zelanda</td><td>2</td><td>-2</td><td>1</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo H</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">España</span></td><td>2</td><td>+4</td><td>4</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Uruguay</span></td><td>2</td><td>0</td><td>2</td></tr><tr><td><span class="pos-num">3</span>Cabo Verde</td><td>2</td><td>0</td><td>2</td></tr><tr><td><span class="pos-num">4</span>Arabia Saudita</td><td>2</td><td>-4</td><td>1</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo I</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Francia ✅</span></td><td>2</td><td>+5</td><td>6</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Noruega ✅</span></td><td>2</td><td>+4</td><td>6</td></tr><tr><td><span class="pos-num">3</span>Senegal</td><td>2</td><td>-3</td><td>0</td></tr><tr><td><span class="pos-num">4</span>Irak</td><td>2</td><td>-6</td><td>0</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo J 🇦🇷</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Argentina ✅</span></td><td>2</td><td>+5</td><td>6</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Austria</span></td><td>2</td><td>+1</td><td>3</td></tr><tr><td><span class="pos-num">3</span>Argelia</td><td>2</td><td>-3</td><td>3</td></tr><tr><td><span class="pos-num">4</span>Jordania</td><td>2</td><td>-3</td><td>0</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo K</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Colombia</span></td><td>1</td><td>+2</td><td>3</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Portugal</span></td><td>2</td><td>+4</td><td>4</td></tr><tr><td><span class="pos-num">3</span>RD Congo</td><td>1</td><td>0</td><td>1</td></tr><tr><td><span class="pos-num">4</span>Uzbekistán</td><td>2</td><td>-6</td><td>0</td></tr></table></div>
-    <div class="grupo-card"><div class="grupo-titulo">Grupo L</div><table class="grupo-tabla"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr><tr><td><span class="pos-num">1</span><span class="clasificado-1">Inglaterra</span></td><td>1</td><td>+2</td><td>3</td></tr><tr><td><span class="pos-num">2</span><span class="clasificado-2">Ghana</span></td><td>1</td><td>+1</td><td>3</td></tr><tr><td><span class="pos-num">3</span>Panamá</td><td>1</td><td>-1</td><td>0</td></tr><tr><td><span class="pos-num">4</span>Croacia</td><td>1</td><td>-2</td><td>0</td></tr></table></div>
-  </div>
+  <button class="refresh-btn" onclick="loadGroups()"><i class="ti ti-refresh" aria-hidden="true"></i> Actualizar</button>
+  <div id="grupos-content"><div class="loading">Cargando grupos...</div></div>
 </div>
 
 <script>
+const CANALES = {
+  'Argentina': 'TyC / Telefe / TV Pública',
+  default: 'TyC Sports / DSports'
+};
+
+function getCanal(home, away) {
+  if (home === 'Argentina' || away === 'Argentina') return CANALES['Argentina'];
+  return CANALES.default;
+}
+
+function toARG(utc) {
+  const d = new Date(utc);
+  return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' });
+}
+
+function toARGDate(utc) {
+  const d = new Date(utc);
+  return d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'America/Argentina/Buenos_Aires' });
+}
+
+function toARGDateKey(utc) {
+  const d = new Date(utc);
+  return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' });
+}
+
+function isToday(utc) {
+  const d = new Date(utc);
+  const now = new Date();
+  const argNow = new Date(now.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+  const argD = new Date(d.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+  return argNow.toDateString() === argD.toDateString();
+}
+
+function statusPill(status, minute) {
+  if (status === 'closed' || status === 'complete') return `<span class="pill pill-closed"><i class="ti ti-check" aria-hidden="true"></i> Finalizado</span>`;
+  if (status === 'inprogress' || status === 'live') {
+    const min = minute ? `<span class="minute">${minute}'</span>` : '';
+    return `<span class="pill pill-live"><i class="ti ti-radio" aria-hidden="true"></i> En juego ${min}</span>`;
+  }
+  return `<span class="pill pill-upcoming"><i class="ti ti-clock" aria-hidden="true"></i> Próximo</span>`;
+}
+
+function cardClass(status) {
+  if (status === 'closed' || status === 'complete') return 'match-card closed';
+  if (status === 'inprogress' || status === 'live') return 'match-card live';
+  return 'match-card upcoming';
+}
+
+function scoreOrTime(game) {
+  const s = game.status;
+  if (s === 'closed' || s === 'complete' || s === 'inprogress' || s === 'live') {
+    const h = game.home_points ?? game.home_score ?? '?';
+    const a = game.away_points ?? game.away_score ?? '?';
+    return `<div class="score-box">${h} - ${a}</div>`;
+  }
+  return `<div class="score-box time">${toARG(game.scheduled)}</div>`;
+}
+
+function matchCard(game, showCanal) {
+  const home = game.home?.name || game.home_team || 'Local';
+  const away = game.away?.name || game.away_team || 'Visitante';
+  const group = game.tournament?.name || game.round?.name || '';
+  const venue = game.venue?.name || '';
+  const canal = showCanal ? `<span class="canal">${getCanal(home, away)}</span>` : '';
+  const meta = [group, venue].filter(Boolean).join(' · ');
+  const minute = game.clock?.played || game.match_clock || null;
+
+  return `
+    <div class="${cardClass(game.status)}">
+      ${statusPill(game.status, minute)}
+      <div class="match-row">
+        <div class="team">${home}</div>
+        ${scoreOrTime(game)}
+        <div class="team right">${away}</div>
+      </div>
+      <div class="match-footer">
+        <span>${meta}</span>
+        ${canal}
+      </div>
+    </div>`;
+}
+
+async function fetchGames() {
+  const resp = await fetch('/api/sports/world_cup/scores', { method: 'GET' });
+  if (!resp.ok) throw new Error('API error ' + resp.status);
+  const data = await resp.json();
+  return data;
+}
+
+function groupByDay(games) {
+  const map = {};
+  games.forEach(g => {
+    const key = toARGDateKey(g.scheduled);
+    if (!map[key]) map[key] = [];
+    map[key].push(g);
+  });
+  return map;
+}
+
+function todayLabel(games) {
+  const todayGames = games.filter(g => isToday(g.scheduled));
+  if (!todayGames.length) return 'Sin partidos hoy';
+  const d = toARGDate(todayGames[0].scheduled);
+  return d.charAt(0).toUpperCase() + d.slice(1);
+}
+
+let allGames = [];
+
+async function loadAll() {
+  try {
+    const data = await fetchGames();
+    allGames = (data.sport_events || data.results || data.games || data.matches || [])
+      .map(r => r.sport_event_status ? { ...r.sport_event, ...r.sport_event_status, home: r.sport_event?.competitors?.[0], away: r.sport_event?.competitors?.[1] } : r)
+      .sort((a, b) => new Date(a.scheduled) - new Date(b.scheduled));
+
+    renderHoy();
+    renderFixture();
+  } catch (e) {
+    document.getElementById('hoy-content').innerHTML = `<div class="error-msg">No se pudo conectar con la API de deportes.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function renderHoy() {
+  const today = allGames.filter(g => isToday(g.scheduled));
+  document.getElementById('hoy-fecha').textContent = today.length ? (() => { const d = toARGDate(today[0].scheduled); return d.charAt(0).toUpperCase() + d.slice(1); })() : 'Hoy';
+
+  if (!today.length) {
+    document.getElementById('hoy-content').innerHTML = `<div class="loading">No hay partidos programados hoy</div>`;
+    return;
+  }
+  document.getElementById('hoy-content').innerHTML = today.map(g => matchCard(g, true)).join('');
+  document.getElementById('hoy-updated').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-AR');
+}
+
+function renderFixture() {
+  const byDay = groupByDay(allGames);
+  const today = new Date();
+  const argToday = new Date(today.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+
+  let html = '';
+  Object.entries(byDay).forEach(([dateKey, games]) => {
+    const d = new Date(games[0].scheduled);
+    const isT = isToday(games[0].scheduled);
+    const isPast = new Date(d.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' })) < argToday && !isT;
+    const label = toARGDate(games[0].scheduled);
+    const cap = label.charAt(0).toUpperCase() + label.slice(1);
+    html += `<div class="day-header">${cap}${isT ? ' — HOY' : isPast ? ' ✓' : ''}</div>`;
+    html += games.map(g => matchCard(g, isT)).join('');
+  });
+  document.getElementById('fixture-content').innerHTML = html || '<div class="loading">Sin datos</div>';
+}
+
+function loadFixture() { renderFixture(); }
+
+async function loadGroups() {
+  document.getElementById('grupos-content').innerHTML = '<div class="loading">Cargando...</div>';
+  try {
+    const resp = await fetch('/api/sports/world_cup/standings');
+    const data = await resp.json();
+    renderGroups(data);
+  } catch (e) {
+    document.getElementById('grupos-content').innerHTML = `<div class="error-msg">No se pudo cargar la tabla.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function renderGroups(data) {
+  const standings = data.standings || data.groups || data.tournament_standings || [];
+  if (!standings.length) {
+    document.getElementById('grupos-content').innerHTML = '<div class="error-msg">No se encontraron datos de grupos</div>';
+    return;
+  }
+
+  let html = '<div class="grupos-grid">';
+  standings.forEach(group => {
+    const name = group.name || group.group_name || 'Grupo';
+    const teams = group.standings || group.teams || [];
+    html += `<div class="grupo-card"><div class="grupo-titulo">${name}</div>
+      <table class="gt"><tr><th>Selección</th><th>PJ</th><th>DG</th><th>PTS</th></tr>`;
+    teams.forEach((t, i) => {
+      const tname = t.name || t.team?.name || '?';
+      const pj = t.played || t.games_played || 0;
+      const dg = (t.goals_for ?? 0) - (t.goals_against ?? 0);
+      const pts = t.points || 0;
+      const dgStr = dg > 0 ? '+' + dg : dg;
+      let cls = '';
+      if (i === 0) cls = 'c1';
+      else if (i === 1) cls = 'c2';
+      else if (pts === 0 && pj >= 2) cls = 'elim';
+      html += `<tr><td><span class="pn">${i+1}</span><span class="${cls}">${tname}</span></td><td>${pj}</td><td>${dgStr}</td><td>${pts}</td></tr>`;
+    });
+    html += '</table></div>';
+  });
+  html += '</div>';
+  document.getElementById('grupos-content').innerHTML = html;
+}
+
 function mostrar(sec, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('visible');
   btn.classList.add('active');
+  if (sec === 'grupos' && !document.getElementById('grupos-content').querySelector('.grupo-card')) loadGroups();
 }
+
+loadAll();
 </script>
