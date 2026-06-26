@@ -120,13 +120,6 @@
     font-size: 20px; color: #888;
     flex-wrap: wrap; gap: 8px;
   }
-  .canal {
-    font-size: 19px; font-weight: bold;
-    padding: 3px 14px; border-radius: 99px;
-    background: #e3f2fd; color: #1565c0;
-  }
-  .canal.arg { background: #e8f5e9; color: #1b5e20; }
-
   /* ── GRUPOS ── */
   .leyenda {
     display: flex; gap: 24px; flex-wrap: wrap;
@@ -206,6 +199,70 @@
     0%, 100% { box-shadow: 0 4px 16px rgba(198,40,40,0.4); }
     50%       { box-shadow: 0 4px 28px rgba(198,40,40,0.85); }
   }
+
+  /* ── ELIMINATORIA ── */
+  .bracket-ronda {
+    margin-bottom: 36px;
+  }
+  .bracket-ronda-titulo {
+    font-size: 26px; font-weight: bold; color: white;
+    background: #1a1a2e; padding: 10px 20px;
+    border-radius: 10px; margin-bottom: 16px;
+    display: inline-block;
+  }
+  .bracket-partidos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 14px;
+  }
+  .bracket-partido {
+    border: 2px solid #ddd; border-radius: 14px;
+    overflow: hidden; background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .bracket-partido.bp-live   { border-color: #c62828; border-width: 3px; }
+  .bracket-partido.bp-paused { border-color: #e65100; border-width: 3px; }
+  .bracket-partido.bp-done   { background: #fafafa; border-color: #e0e0e0; }
+  .bracket-partido.bp-next   { border-color: #bbdefb; background: #f8fbff; }
+  .bracket-partido.bp-tbd    { border-color: #e0e0e0; background: #fafafa; border-style: dashed; }
+
+  .bp-fecha {
+    font-size: 18px; color: #888;
+    padding: 8px 16px 0;
+  }
+  .bp-equipo {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    font-size: 24px; font-weight: bold;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .bp-equipo:last-of-type { border-bottom: none; }
+  .bp-equipo.ganador { color: #1565c0; }
+  .bp-equipo.perdedor { color: #aaa; }
+  .bp-nombre { flex: 1; }
+  .bp-nombre.tbd {
+    font-size: 20px; font-weight: normal;
+    color: #aaa; font-style: italic;
+  }
+  .bp-gol {
+    font-size: 28px; font-weight: bold;
+    min-width: 36px; text-align: center;
+  }
+  .bp-gol.live-gol { color: #c62828; }
+  .bp-gol.paused-gol { color: #e65100; }
+  .bp-num {
+    font-size: 17px; color: #bbb;
+    padding: 4px 16px 8px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .bp-estado {
+    display: inline-block; font-size: 17px; font-weight: bold;
+    padding: 2px 10px; border-radius: 99px; margin-left: 8px;
+  }
+  .bp-est-live   { background: #ffebee; color: #c62828; }
+  .bp-est-paused { background: #fff3e0; color: #e65100; }
+  .bp-est-done   { background: #f0f0f0; color: #777; }
 </style>
 </head>
 <body>
@@ -225,6 +282,7 @@
 <div class="nav">
   <button class="active" onclick="showTab('partidos', this)">Partidos</button>
   <button onclick="showTab('grupos', this)">Tablas</button>
+  <button onclick="showTab('eliminatoria', this)">Eliminatoria</button>
 </div>
 
 <div id="tab-partidos" class="tab visible">
@@ -233,10 +291,14 @@
 <div id="tab-grupos" class="tab">
   <div class="loading">⏳ Cargando tablas...</div>
 </div>
+<div id="tab-eliminatoria" class="tab">
+  <div class="loading">⏳ Cargando bracket...</div>
+</div>
 
 <script>
-const PROXY = 'https://mundial-proxy.ugmartin.workers.dev';
-const TZ    = 'America/Argentina/Buenos_Aires';
+const PROXY    = 'https://mundial-proxy.ugmartin.workers.dev';
+const URL_OPF  = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+const TZ       = 'America/Argentina/Buenos_Aires';
 
 // ── TRADUCCIONES ──────────────────────────────────────────────────────────────
 const NOMBRES = {
@@ -296,15 +358,8 @@ function isPast(utc) {
   return d < n;
 }
 
-// ── CANAL ─────────────────────────────────────────────────────────────────────
-function getCanal(h, a) {
-  if (h === 'Argentina' || a === 'Argentina')
-    return '<span class="canal arg">TyC Sports · Telefe · TV Pública</span>';
-  return '<span class="canal">TyC Sports · DSports</span>';
-}
-
 // ── RENDER PARTIDO ────────────────────────────────────────────────────────────
-function renderPartido(m, showCanal) {
+function renderPartido(m) {
   const hn  = tn(m.homeTeam.name);
   const an  = tn(m.awayTeam.name);
   const hOr = m.homeTeam.name;
@@ -343,7 +398,7 @@ function renderPartido(m, showCanal) {
     // SCHEDULED / TIMED
     const hora  = argTimeStr(ko);
     pillHtml    = `<span class="estado-pill pill-next">⏰ ${hora} hs</span>`;
-    marcadorHtml = `<div class="marcador hora">${hora}</div>`;
+    marcadorHtml = `<div class="marcador hora">vs</div>`;
     cls = 'partido next';
   }
 
@@ -361,7 +416,6 @@ function renderPartido(m, showCanal) {
     </div>
     <div class="partido-meta">
       <span>${meta}</span>
-      ${showCanal ? getCanal(hOr, aOr) : ''}
     </div>
   </div>`;
 }
@@ -394,7 +448,7 @@ function renderPartidos(matches) {
 
     html += `<div class="dia-bloque" ${idBloque}>
       <div class="dia-titulo${esHoy ? ' hoy' : ''}">${label}${suffix}</div>`;
-    ms.forEach(m => { html += renderPartido(m, esHoy); });
+    ms.forEach(m => { html += renderPartido(m); });
     html += `</div>`;
   });
 
@@ -420,14 +474,16 @@ function renderGrupos(standings) {
   let html = `<div class="leyenda">
     <span><span class="dot" style="background:#1565c0"></span> 1° clasifica</span>
     <span><span class="dot" style="background:#2e7d32"></span> 2° clasifica</span>
-    <span><span class="dot" style="background:#ccc"></span> Eliminado</span>
   </div><div class="grupos-grid">`;
 
+  // Recolectar los terceros de cada grupo para la tabla al final
+  const terceros = [];
+
   standings.forEach(grp => {
-    const nombre  = (grp.group || '').replace('GROUP_', 'Grupo ');
-    const table   = grp.table || [];
-    const hasArg  = table.some(r => r.team?.name === 'Argentina');
-    const maxPJ   = Math.max(...table.map(r => r.playedGames || 0), 0);
+    const nombre = (grp.group || '').replace('GROUP_', 'Grupo ');
+    const letra  = (grp.group || '').replace('GROUP_', '');
+    const table  = grp.table || [];
+    const hasArg = table.some(r => r.team?.name === 'Argentina');
 
     html += `<div class="grupo-card">
       <div class="grupo-titulo">${nombre}${hasArg ? ' 🇦🇷' : ''}</div>
@@ -436,17 +492,21 @@ function renderGrupos(standings) {
 
     table.forEach((r, i) => {
       const nm  = tn(r.team?.name || '?');
-      const pj  = r.playedGames ?? 0;
-      const gf  = r.goalsFor   ?? 0;
-      const gc  = r.goalsAgainst ?? 0;
+      const pj  = r.playedGames   ?? 0;
+      const gf  = r.goalsFor      ?? 0;
+      const gc  = r.goalsAgainst  ?? 0;
       const dg  = r.goalDifference ?? (gf - gc);
-      const pts = r.points ?? 0;
+      const pts = r.points        ?? 0;
       const dgStr = dg > 0 ? `+${dg}` : `${dg}`;
 
       let cls = '';
       if (i === 0) cls = 'c1';
       else if (i === 1) cls = 'c2';
-      else if (pj >= 2 && pts === 0 && pj === maxPJ) cls = 'cx';
+
+      // Guardar el tercero de cada grupo
+      if (i === 2 && pj > 0) {
+        terceros.push({ grupo: letra, nm, pj, gf, gc, dg, pts });
+      }
 
       html += `<tr>
         <td><span class="pos">${i+1}</span><span class="${cls}">${nm}</span></td>
@@ -458,7 +518,72 @@ function renderGrupos(standings) {
     html += `</table></div>`;
   });
 
-  html += `</div><div class="footer">
+  html += `</div>`;
+
+  // ── TABLA DE MEJORES TERCEROS ──────────────────────────────────────────────
+  if (terceros.length > 0) {
+    // Ordenar: pts desc, dg desc, gf desc
+    const sorted = [...terceros].sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.dg  !== a.dg)  return b.dg  - a.dg;
+      return b.gf - a.gf;
+    });
+
+    // Cuántos grupos terminaron (para saber si la clasificación es definitiva)
+    const gruposCompletos = standings.filter(g => {
+      const maxPJ = Math.max(...(g.table || []).map(r => r.playedGames || 0));
+      return maxPJ >= 3;
+    }).length;
+    const totalGrupos = standings.length; // 12
+
+    const clasificados = sorted.slice(0, 8);
+    const enDisputa    = sorted.slice(8);
+
+    html += `
+    <div style="margin-top:32px">
+      <div class="grupo-titulo" style="border-radius:10px; display:inline-block; margin-bottom:16px; font-size:24px">
+        🏅 Mejores terceros — Top 8 clasifican
+      </div>
+      <p style="font-size:19px; color:#888; margin-bottom:14px">
+        Orden por: puntos → diferencia de goles → goles a favor.
+        ${gruposCompletos < totalGrupos
+          ? `⚠️ <strong>${totalGrupos - gruposCompletos} grupo(s)</strong> aún no terminaron — posiciones provisorias.`
+          : '✅ Todos los grupos terminados.'}
+        En caso de empate en los 3 criterios, desempata fair play y ranking FIFA (no disponibles online).
+      </p>
+      <div class="grupo-card">
+        <table class="grupo-tabla">
+          <tr>
+            <th style="text-align:center">Pos</th>
+            <th>Selección</th>
+            <th>Grupo</th>
+            <th>PJ</th>
+            <th>GF</th>
+            <th>GC</th>
+            <th>DG</th>
+            <th>PTS</th>
+          </tr>`;
+
+    sorted.forEach((r, i) => {
+      const clasifica = i < 8;
+      const esLimite  = i === 7; // línea de corte
+      const cls = clasifica ? (i < 3 ? 'c1' : 'c2') : '';
+      const dgStr = r.dg > 0 ? `+${r.dg}` : `${r.dg}`;
+      const borderStyle = esLimite ? 'border-bottom: 3px solid #1565c0;' : '';
+
+      html += `<tr style="${borderStyle}">
+        <td style="text-align:center"><span class="pos">${i+1}</span></td>
+        <td><span class="${cls}">${r.nm}${clasifica ? ' ✓' : ''}</span></td>
+        <td style="text-align:center; color:#888">${r.grupo}</td>
+        <td>${r.pj}</td><td>${r.gf}</td><td>${r.gc}</td>
+        <td>${dgStr}</td><td><strong>${r.pts}</strong></td>
+      </tr>`;
+    });
+
+    html += `</table></div></div>`;
+  }
+
+  html += `<div class="footer">
     Datos: football-data.org · Actualización automática cada 60 seg
     <br><button class="refresh-btn" onclick="cargarDatos()">↻ Actualizar ahora</button>
   </div>`;
@@ -521,6 +646,149 @@ function actualizarFabs(matches) {
   }
 }
 
+// ── RENDER ELIMINATORIA ───────────────────────────────────────────────────────
+// Traduce placeholders de openfootball a español legible
+function traducirPlaceholder(str) {
+  if (!str) return '?';
+  // Ya es un equipo real con nombre conocido
+  if (NOMBRES[str]) return NOMBRES[str];
+
+  // Ganador/Perdedor de partido anterior: W74, L101
+  if (/^W\d+$/.test(str)) return `Ganador partido #${str.slice(1)}`;
+  if (/^L\d+$/.test(str)) return `Perdedor partido #${str.slice(1)}`;
+
+  // Posición de grupo: 1F, 2C, 3A/B/C
+  const mPos = str.match(/^(\d+)([A-Z](?:\/[A-Z])*)$/);
+  if (mPos) {
+    const pos = mPos[1], grupos = mPos[2].replace(/\//g, '/');
+    const ordinal = pos === '1' ? '1°' : pos === '2' ? '2°' : pos === '3' ? '3°' : pos + '°';
+    return `${ordinal} Grupo ${grupos}`;
+  }
+
+  return str; // devolver como está si no matchea nada
+}
+
+function esTBD(str) {
+  // Es TBD si es un placeholder (no es nombre de equipo real)
+  if (!str) return true;
+  if (NOMBRES[str]) return false;
+  return true;
+}
+
+function renderEliminatoria(koMatches) {
+  const ORDEN_RONDAS = [
+    'Round of 32', 'Round of 16', 'Quarter-final',
+    'Semi-final', 'Match for third place', 'Final'
+  ];
+  const NOMBRES_RONDAS = {
+    'Round of 32':        'Ronda de 32',
+    'Round of 16':        'Octavos de final',
+    'Quarter-final':      'Cuartos de final',
+    'Semi-final':         'Semifinales',
+    'Match for third place': 'Tercer puesto',
+    'Final':              'Final'
+  };
+
+  // Agrupar por ronda
+  const byRound = {};
+  koMatches.forEach(m => {
+    const r = m.round;
+    if (!byRound[r]) byRound[r] = [];
+    byRound[r].push(m);
+  });
+
+  let html = '';
+
+  ORDEN_RONDAS.forEach(ronda => {
+    const partidos = byRound[ronda];
+    if (!partidos) return;
+
+    html += `<div class="bracket-ronda">
+      <div class="bracket-ronda-titulo">${NOMBRES_RONDAS[ronda] || ronda}</div>
+      <div class="bracket-partidos">`;
+
+    partidos.forEach(p => {
+      const h1 = p.team1 || '';
+      const h2 = p.team2 || '';
+      const tbd1 = esTBD(h1);
+      const tbd2 = esTBD(h2);
+      const n1 = tbd1 ? traducirPlaceholder(h1) : tn(h1);
+      const n2 = tbd2 ? traducirPlaceholder(h2) : tn(h2);
+      const sc = p.score?.ft;
+      const hasScore = !!sc;
+      const g1 = hasScore ? sc[0] : null;
+      const g2 = hasScore ? sc[1] : null;
+
+      // Estado del partido: openfootball no tiene status en tiempo real
+      // Cruzamos con football-data via liveMap (pasado como contexto global)
+      const liveInfo = window._liveMap?.[p.num];
+      const status = liveInfo?.status || (hasScore ? 'FINISHED' : 'TIMED');
+
+      let bpClass = 'bracket-partido';
+      if (status === 'IN_PLAY')  bpClass += ' bp-live';
+      else if (status === 'PAUSED') bpClass += ' bp-paused';
+      else if (status === 'FINISHED' || hasScore) bpClass += ' bp-done';
+      else if (tbd1 && tbd2)    bpClass += ' bp-tbd';
+      else                       bpClass += ' bp-next';
+
+      // Determinar ganador
+      let gan1 = '', gan2 = '';
+      if (hasScore) {
+        if (g1 > g2) { gan1 = 'ganador'; gan2 = 'perdedor'; }
+        else if (g2 > g1) { gan1 = 'perdedor'; gan2 = 'ganador'; }
+      }
+      if (liveInfo && liveInfo.status !== 'FINISHED') { gan1 = ''; gan2 = ''; }
+
+      // Score a mostrar
+      const scoreG1 = liveInfo?.homeScore ?? g1;
+      const scoreG2 = liveInfo?.awayScore ?? g2;
+      const golClass = status === 'IN_PLAY' ? 'live-gol' : status === 'PAUSED' ? 'paused-gol' : '';
+
+      // Estado pill
+      let estadoPill = '';
+      if (status === 'IN_PLAY') {
+        const min = liveInfo?.minute || '▶';
+        estadoPill = `<span class="bp-estado bp-est-live">🔴 ${min}</span>`;
+      } else if (status === 'PAUSED') {
+        estadoPill = `<span class="bp-estado bp-est-paused">⏸ ET</span>`;
+      } else if (hasScore || status === 'FINISHED') {
+        estadoPill = `<span class="bp-estado bp-est-done">✓</span>`;
+      }
+
+      const fecha = p.date ? new Date(p.date).toLocaleDateString('es-AR', {
+        day:'numeric', month:'short', timeZone: TZ
+      }) : '';
+
+      const scoreHtml1 = scoreG1 !== null
+        ? `<span class="bp-gol ${golClass}">${scoreG1}</span>` : '';
+      const scoreHtml2 = scoreG2 !== null
+        ? `<span class="bp-gol ${golClass}">${scoreG2}</span>` : '';
+
+      html += `<div class="${bpClass}">
+        <div class="bp-fecha">${fecha}${estadoPill}</div>
+        <div class="bp-equipo ${gan1}">
+          <span class="bp-nombre${tbd1 ? ' tbd' : ''}">${n1}</span>
+          ${scoreHtml1}
+        </div>
+        <div class="bp-equipo ${gan2}">
+          <span class="bp-nombre${tbd2 ? ' tbd' : ''}">${n2}</span>
+          ${scoreHtml2}
+        </div>
+        <div class="bp-num">#${p.num} · ${p.ground || ''}</div>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  html += `<div class="footer">
+    Fixture KO: openfootball · Scores en vivo: football-data.org
+    <br><button class="refresh-btn" onclick="cargarDatos()">↻ Actualizar ahora</button>
+  </div>`;
+
+  document.getElementById('tab-eliminatoria').innerHTML = html;
+}
+
 // ── TAB SWITCHER ──────────────────────────────────────────────────────────────
 function showTab(id, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('visible'));
@@ -533,25 +801,54 @@ function showTab(id, btn) {
 async function cargarDatos() {
   try {
     const t = Date.now();
-    const [resMatches, resStandings] = await Promise.all([
+    const [resMatches, resStandings, resOpf] = await Promise.all([
       fetch(`${PROXY}/v4/competitions/WC/matches?t=${t}`),
       fetch(`${PROXY}/v4/competitions/WC/standings?t=${t}`),
+      fetch(`${URL_OPF}?t=${t}`),
     ]);
 
     if (!resMatches.ok)   throw new Error(`Matches HTTP ${resMatches.status}`);
     if (!resStandings.ok) throw new Error(`Standings HTTP ${resStandings.status}`);
+    if (!resOpf.ok)       throw new Error(`Fixture KO HTTP ${resOpf.status}`);
 
     const dataMatches   = await resMatches.json();
     const dataStandings = await resStandings.json();
+    const dataOpf       = await resOpf.json();
 
     const matches   = dataMatches.matches || [];
     const standings = dataStandings.standings || [];
+    const allOpf    = dataOpf.matches || [];
+    const koMatches = allOpf.filter(m => !m.round?.startsWith('Matchday'));
 
     if (!matches.length)   throw new Error('No se recibieron partidos');
     if (!standings.length) throw new Error('No se recibieron standings');
 
+    // Mapa global de scores en vivo por número de partido (para el bracket)
+    // football-data usa IDs distintos, cruzamos por fecha+equipos con lo que tenemos
+    window._liveMap = {};
+    matches.forEach(m => {
+      if (m.status === 'IN_PLAY' || m.status === 'PAUSED' || m.status === 'FINISHED') {
+        // Buscar el partido correspondiente en openfootball por equipos
+        const hName = m.homeTeam?.name || '';
+        const aName = m.awayTeam?.name || '';
+        const match = koMatches.find(k =>
+          k.team1 === hName && k.team2 === aName ||
+          k.team1 === aName && k.team2 === hName
+        );
+        if (match) {
+          window._liveMap[match.num] = {
+            status:    m.status,
+            homeScore: m.score?.fullTime?.home,
+            awayScore: m.score?.fullTime?.away,
+            minute:    m.minute,
+          };
+        }
+      }
+    });
+
     renderPartidos(matches);
     renderGrupos(standings);
+    renderEliminatoria(koMatches);
     actualizarFabs(matches);
 
     const now = new Date().toLocaleString('es-AR', {
@@ -566,8 +863,9 @@ async function cargarDatos() {
       <small>${e.message}</small><br><br>
       <button class="refresh-btn" onclick="cargarDatos()">↻ Reintentar</button>
     </div>`;
-    document.getElementById('tab-partidos').innerHTML = msg;
-    document.getElementById('tab-grupos').innerHTML   = msg;
+    document.getElementById('tab-partidos').innerHTML    = msg;
+    document.getElementById('tab-grupos').innerHTML      = msg;
+    document.getElementById('tab-eliminatoria').innerHTML = msg;
     document.getElementById('upd-ts').textContent = 'Error al cargar';
     console.error(e);
   }
