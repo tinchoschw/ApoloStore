@@ -85,8 +85,6 @@
     background: white;
     box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   }
-  .partido.live   { border: 3px solid #c62828; box-shadow: 0 2px 14px rgba(198,40,40,0.18); }
-  .partido.paused { border: 3px solid #e65100; box-shadow: 0 2px 14px rgba(230,81,0,0.15); }
   .partido.done   { background: #fafafa; border-color: #e0e0e0; }
   .partido.next   { border-color: #bbdefb; background: #f8fbff; }
 
@@ -95,8 +93,6 @@
     padding: 4px 16px; border-radius: 99px; margin-bottom: 12px;
   }
   .pill-done   { background: #f0f0f0; color: #777; }
-  .pill-live   { background: #ffebee; color: #c62828; }
-  .pill-paused { background: #fff3e0; color: #e65100; }
   .pill-next   { background: #e3f2fd; color: #1565c0; }
 
   .partido-fila { display: flex; align-items: center; gap: 16px; }
@@ -200,69 +196,167 @@
     50%       { box-shadow: 0 4px 28px rgba(198,40,40,0.85); }
   }
 
-  /* ── ELIMINATORIA ── */
-  .bracket-ronda {
-    margin-bottom: 36px;
+  /* ── ELIMINATORIA BRACKET ── */
+  #tab-eliminatoria {
+    overflow-x: auto;
+    padding-bottom: 40px;
   }
-  .bracket-ronda-titulo {
-    font-size: 26px; font-weight: bold; color: white;
-    background: #1a1a2e; padding: 10px 20px;
-    border-radius: 10px; margin-bottom: 16px;
-    display: inline-block;
+  .bracket-wrap {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    min-width: 900px;
   }
-  .bracket-partidos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 14px;
+  .bracket-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 180px;
   }
-  .bracket-partido {
-    border: 2px solid #ddd; border-radius: 14px;
-    overflow: hidden; background: white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  .bracket-col-titulo {
+    font-size: 18px; font-weight: bold; color: white;
+    background: #1a1a2e;
+    text-align: center;
+    padding: 10px 6px;
+    border-right: 1px solid #0f3460;
   }
-  .bracket-partido.bp-live   { border-color: #c62828; border-width: 3px; }
-  .bracket-partido.bp-paused { border-color: #e65100; border-width: 3px; }
-  .bracket-partido.bp-done   { background: #fafafa; border-color: #e0e0e0; }
-  .bracket-partido.bp-next   { border-color: #bbdefb; background: #f8fbff; }
-  .bracket-partido.bp-tbd    { border-color: #e0e0e0; background: #fafafa; border-style: dashed; }
+  .bracket-col:last-child .bracket-col-titulo { border-right: none; }
 
-  .bp-fecha {
-    font-size: 18px; color: #888;
-    padding: 8px 16px 0;
+  .bracket-slots {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-around;
+    padding: 8px 0;
   }
-  .bp-equipo {
-    display: flex; align-items: center;
+  .bracket-match-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  /* línea de conexión derecha */
+  .bracket-match-wrap.con-linea-der::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 12px;
+    height: 1px;
+    background: #bbb;
+  }
+  /* línea vertical que une los dos partidos que se juntan */
+  .bracket-connector {
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    padding: 10px 16px;
-    font-size: 24px; font-weight: bold;
+    width: 12px;
+    flex-shrink: 0;
+  }
+  .bracket-connector-inner {
+    border-right: 1px solid #bbb;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+    flex: 1;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .bm {
+    flex: 1;
+    margin: 6px 4px 6px 8px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    min-width: 0;
+  }
+  .bm.bm-done   { border-color: #ccc; background: #fafafa; }
+  .bm.bm-tbd    { border-style: dashed; border-color: #e0e0e0; background: #f9f9f9; }
+  .bm.bm-arg    { border-color: #74acdf; border-width: 2px; }
+
+  .bm-team {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 10px;
+    font-size: 17px; font-weight: bold;
     border-bottom: 1px solid #f0f0f0;
+    min-height: 36px;
   }
-  .bp-equipo:last-of-type { border-bottom: none; }
-  .bp-equipo.ganador { color: #1565c0; }
-  .bp-equipo.perdedor { color: #aaa; }
-  .bp-nombre { flex: 1; }
-  .bp-nombre.tbd {
-    font-size: 20px; font-weight: normal;
-    color: #aaa; font-style: italic;
+  .bm-team:last-of-type { border-bottom: none; }
+  .bm-team.ganador { color: #1565c0; }
+  .bm-team.perdedor { color: #bbb; font-weight: normal; }
+  .bm-team-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bm-team-name.tbd { color: #bbb; font-weight: normal; font-style: italic; font-size: 14px; }
+  .bm-score { font-size: 19px; font-weight: bold; margin-left: 6px; min-width: 18px; text-align: right; }
+  .bm-fecha { font-size: 13px; color: #aaa; padding: 3px 10px; border-top: 1px solid #f0f0f0; }
+
+  /* columna especial del tercer puesto + final */
+  .bracket-col-final {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 180px;
   }
-  .bp-gol {
-    font-size: 28px; font-weight: bold;
-    min-width: 36px; text-align: center;
+  .bracket-final-slots {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    gap: 20px;
+    padding: 8px 0;
   }
-  .bp-gol.live-gol { color: #c62828; }
-  .bp-gol.paused-gol { color: #e65100; }
-  .bp-num {
-    font-size: 17px; color: #bbb;
-    padding: 4px 16px 8px;
-    border-top: 1px solid #f0f0f0;
+
+  /* ── ELIMINATORIA: CARRUSEL POR FASE ── */
+  .fase-nav {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 14px;
+    margin-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
   }
-  .bp-estado {
-    display: inline-block; font-size: 17px; font-weight: bold;
-    padding: 2px 10px; border-radius: 99px; margin-left: 8px;
+  .fase-nav button {
+    flex: 0 0 auto;
+    font-size: 19px;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    padding: 9px 20px;
+    border-radius: 99px;
+    border: 2px solid #1a1a2e;
+    background: white;
+    color: #1a1a2e;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
   }
-  .bp-est-live   { background: #ffebee; color: #c62828; }
-  .bp-est-paused { background: #fff3e0; color: #e65100; }
-  .bp-est-done   { background: #f0f0f0; color: #777; }
+  .fase-nav button.activo { background: #1a1a2e; color: white; }
+
+  .fase-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .fase-scroll::-webkit-scrollbar { display: none; }
+
+  .fase-pagina {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+    padding: 4px 4px 8px;
+    min-width: 0;
+  }
+
+  .fase-titulo {
+    font-size: 24px; font-weight: bold; color: #666;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 10px 0 8px;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .partido.tbd .equipo { color: #bbb; font-style: italic; }
 </style>
 </head>
 <body>
@@ -358,6 +452,26 @@ function isPast(utc) {
   return d < n;
 }
 
+// openfootball trae "date":"2026-06-11" (sin hora) + "time":"13:00 UTC-6".
+// Si solo usamos "date", new Date() lo toma como medianoche UTC y al pasarlo
+// a horario argentino (UTC-3) cae en el día anterior a las 21hs. Por eso
+// combinamos date+time con su offset real para obtener el instante correcto.
+function opfUtcDate(p) {
+  if (!p?.date) return null;
+  let hh = '12', mm = '00', offset = '+00:00';
+  if (p.time) {
+    const m = p.time.match(/(\d{1,2}):(\d{2})\s*UTC([+-]\d{1,2})/);
+    if (m) {
+      hh = m[1].padStart(2, '0');
+      mm = m[2];
+      const offNum = parseInt(m[3], 10);
+      offset = (offNum < 0 ? '-' : '+') + String(Math.abs(offNum)).padStart(2, '0') + ':00';
+    }
+  }
+  const d = new Date(`${p.date}T${hh}:${mm}:00${offset}`);
+  return isNaN(d) ? null : d;
+}
+
 // ── RENDER PARTIDO ────────────────────────────────────────────────────────────
 function renderPartido(m) {
   const hn  = tn(m.homeTeam.name);
@@ -375,29 +489,13 @@ function renderPartido(m) {
   if (st === 'FINISHED') {
     const h = m.score?.fullTime?.home ?? '?';
     const a = m.score?.fullTime?.away ?? '?';
-    pillHtml    = `<span class="estado-pill pill-done">✓ Finalizado</span>`;
+    pillHtml     = `<span class="estado-pill pill-done">✓ Finalizado</span>`;
     marcadorHtml = `<div class="marcador">${h} - ${a}</div>`;
     cls = 'partido done';
 
-  } else if (st === 'IN_PLAY') {
-    const h   = m.score?.fullTime?.home ?? '?';
-    const a   = m.score?.fullTime?.away ?? '?';
-    const min = m.minute ? `${m.minute}'` : '▶';
-    pillHtml    = `<span class="estado-pill pill-live">🔴 EN JUEGO · ${min}</span>`;
-    marcadorHtml = `<div class="marcador live-score">${h} - ${a}</div>`;
-    cls = 'partido live';
-
-  } else if (st === 'PAUSED') {
-    const h = m.score?.fullTime?.home ?? '?';
-    const a = m.score?.fullTime?.away ?? '?';
-    pillHtml    = `<span class="estado-pill pill-paused">⏸ Entretiempo</span>`;
-    marcadorHtml = `<div class="marcador paused-score">${h} - ${a}</div>`;
-    cls = 'partido paused';
-
   } else {
-    // SCHEDULED / TIMED
-    const hora  = argTimeStr(ko);
-    pillHtml    = `<span class="estado-pill pill-next">⏰ ${hora} hs</span>`;
+    const hora   = argTimeStr(ko);
+    pillHtml     = `<span class="estado-pill pill-next">⏰ ${hora} hs</span>`;
     marcadorHtml = `<div class="marcador hora">vs</div>`;
     cls = 'partido next';
   }
@@ -676,118 +774,185 @@ function esTBD(str) {
 }
 
 function renderEliminatoria(koMatches) {
-  const ORDEN_RONDAS = [
-    'Round of 32', 'Round of 16', 'Quarter-final',
-    'Semi-final', 'Match for third place', 'Final'
-  ];
-  const NOMBRES_RONDAS = {
-    'Round of 32':        'Ronda de 32',
-    'Round of 16':        'Octavos de final',
-    'Quarter-final':      'Cuartos de final',
-    'Semi-final':         'Semifinales',
-    'Match for third place': 'Tercer puesto',
-    'Final':              'Final'
-  };
+  // Índice por número de partido
+  const byNum = {};
+  koMatches.forEach(m => { byNum[m.num] = m; });
 
-  // Agrupar por ronda
-  const byRound = {};
-  koMatches.forEach(m => {
-    const r = m.round;
-    if (!byRound[r]) byRound[r] = [];
-    byRound[r].push(m);
-  });
-
-  let html = '';
-
-  ORDEN_RONDAS.forEach(ronda => {
-    const partidos = byRound[ronda];
-    if (!partidos) return;
-
-    html += `<div class="bracket-ronda">
-      <div class="bracket-ronda-titulo">${NOMBRES_RONDAS[ronda] || ronda}</div>
-      <div class="bracket-partidos">`;
-
-    partidos.forEach(p => {
-      const h1 = p.team1 || '';
-      const h2 = p.team2 || '';
-      const tbd1 = esTBD(h1);
-      const tbd2 = esTBD(h2);
-      const n1 = tbd1 ? traducirPlaceholder(h1) : tn(h1);
-      const n2 = tbd2 ? traducirPlaceholder(h2) : tn(h2);
-      const sc = p.score?.ft;
-      const hasScore = !!sc;
-      const g1 = hasScore ? sc[0] : null;
-      const g2 = hasScore ? sc[1] : null;
-
-      // Estado del partido: openfootball no tiene status en tiempo real
-      // Cruzamos con football-data via liveMap (pasado como contexto global)
-      const liveInfo = window._liveMap?.[p.num];
-      const status = liveInfo?.status || (hasScore ? 'FINISHED' : 'TIMED');
-
-      let bpClass = 'bracket-partido';
-      if (status === 'IN_PLAY')  bpClass += ' bp-live';
-      else if (status === 'PAUSED') bpClass += ' bp-paused';
-      else if (status === 'FINISHED' || hasScore) bpClass += ' bp-done';
-      else if (tbd1 && tbd2)    bpClass += ' bp-tbd';
-      else                       bpClass += ' bp-next';
-
-      // Determinar ganador
-      let gan1 = '', gan2 = '';
-      if (hasScore) {
-        if (g1 > g2) { gan1 = 'ganador'; gan2 = 'perdedor'; }
-        else if (g2 > g1) { gan1 = 'perdedor'; gan2 = 'ganador'; }
+  // Resolver nombre de un equipo (real o placeholder)
+  function resolverNombre(str) {
+    if (!str) return { nombre: '?', tbd: true };
+    if (NOMBRES[str]) return { nombre: NOMBRES[str], tbd: false };
+    // Ganador de partido anterior: W73
+    const mW = str.match(/^W(\d+)$/);
+    if (mW) {
+      const prev = byNum[parseInt(mW[1])];
+      if (prev?.score?.ft) {
+        const [g1, g2] = prev.score.ft;
+        const ganador = g1 > g2 ? prev.team1 : prev.team2;
+        if (NOMBRES[ganador]) return { nombre: NOMBRES[ganador], tbd: false };
       }
-      if (liveInfo && liveInfo.status !== 'FINISHED') { gan1 = ''; gan2 = ''; }
-
-      // Score a mostrar
-      const scoreG1 = liveInfo?.homeScore ?? g1;
-      const scoreG2 = liveInfo?.awayScore ?? g2;
-      const golClass = status === 'IN_PLAY' ? 'live-gol' : status === 'PAUSED' ? 'paused-gol' : '';
-
-      // Estado pill
-      let estadoPill = '';
-      if (status === 'IN_PLAY') {
-        const min = liveInfo?.minute || '▶';
-        estadoPill = `<span class="bp-estado bp-est-live">🔴 ${min}</span>`;
-      } else if (status === 'PAUSED') {
-        estadoPill = `<span class="bp-estado bp-est-paused">⏸ ET</span>`;
-      } else if (hasScore || status === 'FINISHED') {
-        estadoPill = `<span class="bp-estado bp-est-done">✓</span>`;
+      return { nombre: `Gan. #${mW[1]}`, tbd: true };
+    }
+    // Perdedor: L101
+    const mL = str.match(/^L(\d+)$/);
+    if (mL) {
+      const prev = byNum[parseInt(mL[1])];
+      if (prev?.score?.ft) {
+        const [g1, g2] = prev.score.ft;
+        const perdedor = g1 < g2 ? prev.team1 : prev.team2;
+        if (NOMBRES[perdedor]) return { nombre: NOMBRES[perdedor], tbd: false };
       }
+      return { nombre: `Per. #${mL[1]}`, tbd: true };
+    }
+    // Posición grupo: 1F, 2C, 3A/B/C/D/F
+    const mPos = str.match(/^(\d+)([A-Z](?:\/[A-Z])*)$/);
+    if (mPos) {
+      const ord = {'1':'1°','2':'2°','3':'3°'}[mPos[1]] || mPos[1]+'°';
+      return { nombre: `${ord} Gr. ${mPos[2]}`, tbd: true };
+    }
+    return { nombre: str, tbd: true };
+  }
 
-      const fecha = p.date ? new Date(p.date).toLocaleDateString('es-AR', {
-        day:'numeric', month:'short', timeZone: TZ
-      }) : '';
+  // Formatea fecha+hora ya corregida (ver opfUtcDate) en horario argentino
+  function faseFechaStr(p) {
+    const dt = opfUtcDate(p);
+    if (!dt) return '';
+    const fecha = dt.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', timeZone: TZ });
+    const hora  = dt.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
+    return `${fecha} · ${hora} hs`;
+  }
 
-      const scoreHtml1 = scoreG1 !== null
-        ? `<span class="bp-gol ${golClass}">${scoreG1}</span>` : '';
-      const scoreHtml2 = scoreG2 !== null
-        ? `<span class="bp-gol ${golClass}">${scoreG2}</span>` : '';
-
-      html += `<div class="${bpClass}">
-        <div class="bp-fecha">${fecha}${estadoPill}</div>
-        <div class="bp-equipo ${gan1}">
-          <span class="bp-nombre${tbd1 ? ' tbd' : ''}">${n1}</span>
-          ${scoreHtml1}
+  // Render de una tarjeta de partido, reutilizando las clases de la solapa "Partidos"
+  // para mantener exactamente la misma tipografía en todas las solapas.
+  function renderFaseMatch(p) {
+    if (!p) {
+      return `<div class="partido tbd">
+        <div class="partido-fila">
+          <div class="equipo">Por definir</div>
+          <div class="marcador hora">vs</div>
+          <div class="equipo der">Por definir</div>
         </div>
-        <div class="bp-equipo ${gan2}">
-          <span class="bp-nombre${tbd2 ? ' tbd' : ''}">${n2}</span>
-          ${scoreHtml2}
-        </div>
-        <div class="bp-num">#${p.num} · ${p.ground || ''}</div>
       </div>`;
-    });
+    }
 
-    html += `</div></div>`;
+    const r1  = resolverNombre(p.team1);
+    const r2  = resolverNombre(p.team2);
+    const sc  = p.score?.ft;
+    const g1  = sc ? sc[0] : null;
+    const g2  = sc ? sc[1] : null;
+    const fin = !!sc;
+    const fechaStr = faseFechaStr(p);
+
+    let estilo1 = r1.tbd ? ' style="color:#bbb;font-style:italic;"' : '';
+    let estilo2 = r2.tbd ? ' style="color:#bbb;font-style:italic;"' : '';
+    if (fin && g1 !== null) {
+      if (g1 > g2) estilo1 = ' style="color:#1565c0"';
+      if (g2 > g1) estilo2 = ' style="color:#1565c0"';
+    }
+
+    let marcadorHtml, pillHtml, cls;
+    if (fin) {
+      marcadorHtml = `<div class="marcador">${g1} - ${g2}</div>`;
+      pillHtml = `<span class="estado-pill pill-done">✓ Finalizado</span>`;
+      cls = 'partido done';
+    } else if (fechaStr) {
+      marcadorHtml = `<div class="marcador hora">vs</div>`;
+      pillHtml = `<span class="estado-pill pill-next">⏰ ${fechaStr}</span>`;
+      cls = 'partido next';
+    } else {
+      marcadorHtml = `<div class="marcador hora">vs</div>`;
+      pillHtml = '';
+      cls = 'partido';
+    }
+
+    return `<div class="${cls}">
+      ${pillHtml}
+      <div class="partido-fila">
+        <div class="equipo"${estilo1}>${r1.nombre}</div>
+        ${marcadorHtml}
+        <div class="equipo der"${estilo2}>${r2.nombre}</div>
+      </div>
+    </div>`;
+  }
+
+  // Estructura del bracket: cada "rama" = [32avo_1, 32avo_2, 16avo, QF, SF, Final]
+  const RAMAS = [
+    [74, 77, 89, 97, 101, 104],
+    [73, 75, 90, 97, 101, 104],
+    [83, 84, 93, 98, 101, 104],
+    [81, 82, 94, 98, 101, 104],
+    [76, 78, 91, 99, 102, 104],
+    [79, 80, 92, 99, 102, 104],
+    [86, 88, 95, 100, 102, 104],
+    [85, 87, 96, 100, 102, 104],
+  ];
+
+  const unicos = arr => [...new Set(arr)];
+
+  const numsR32   = RAMAS.flatMap(r => [r[0], r[1]]);
+  const numsR16   = unicos(RAMAS.map(r => r[2]));
+  const numsQF    = unicos(RAMAS.map(r => r[3]));
+  const numsSF    = unicos(RAMAS.map(r => r[4]));
+  const numFinal  = 104;
+  const numTercero = 103;
+
+  const FASES = [
+    { titulo: '32avos de Final', nums: numsR32 },
+    { titulo: '16avos de Final', nums: numsR16 },
+    { titulo: 'Cuartos de Final', nums: numsQF },
+    { titulo: 'Semifinales', nums: numsSF },
+    { titulo: 'Final y 3er Puesto', nums: [numFinal, numTercero], esFinal: true },
+  ];
+
+  let navHtml = '<div class="fase-nav">';
+  FASES.forEach((f, i) => {
+    navHtml += `<button onclick="irAFase(${i}, this)" class="${i === 0 ? 'activo' : ''}">${f.titulo.replace(' de Final','').replace(' y 3er Puesto','')}</button>`;
   });
+  navHtml += '</div>';
+
+  let scrollHtml = '<div class="fase-scroll" id="fase-scroll">';
+  FASES.forEach((f, i) => {
+    scrollHtml += `<div class="fase-pagina" id="fase-${i}">
+      <div class="fase-titulo">${f.titulo}</div>`;
+    f.nums.forEach(num => {
+      if (f.esFinal && num === numTercero) {
+        scrollHtml += `<div style="font-size:16px;color:#aaa;text-align:center;margin:18px 0 6px;text-transform:uppercase;letter-spacing:1px;">🥉 Tercer puesto</div>`;
+      }
+      scrollHtml += renderFaseMatch(byNum[num]);
+    });
+    scrollHtml += `</div>`;
+  });
+  scrollHtml += '</div>';
+
+  let html = navHtml + scrollHtml;
 
   html += `<div class="footer">
-    Fixture KO: openfootball · Scores en vivo: football-data.org
+    Fixture KO: openfootball · Resultados: football-data.org
     <br><button class="refresh-btn" onclick="cargarDatos()">↻ Actualizar ahora</button>
   </div>`;
 
   document.getElementById('tab-eliminatoria').innerHTML = html;
+
+  // Al cambiar de página con el swipe, resaltar el botón de fase correspondiente
+  const wrap = document.getElementById('fase-scroll');
+  if (wrap && !wrap._scrollBound) {
+    wrap._scrollBound = true;
+    wrap.addEventListener('scroll', () => {
+      const idx = Math.round(wrap.scrollLeft / wrap.clientWidth);
+      document.querySelectorAll('.fase-nav button').forEach((b, i) => {
+        b.classList.toggle('activo', i === idx);
+      });
+    }, { passive: true });
+  }
 }
+
+function irAFase(i, btn) {
+  const el = document.getElementById('fase-' + i);
+  if (el) el.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  document.querySelectorAll('.fase-nav button').forEach(b => b.classList.remove('activo'));
+  if (btn) btn.classList.add('activo');
+}
+
 
 // ── TAB SWITCHER ──────────────────────────────────────────────────────────────
 function showTab(id, btn) {
