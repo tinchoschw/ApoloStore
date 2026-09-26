@@ -123,7 +123,7 @@ function parseCSV(t){
 
 function group(){
   const map={};
-  productos.forEach(p=>{const k=p.desc+'||'+p.color;if(!map[k])map[k]={cat:p.cat,desc:p.desc,color:p.color,precio:p.precio,precioSin:p.precioSin,talles:[],mainImg:p.mainImg,media:p.media,total:0};map[k].talles.push({talle:p.talle,stock:p.stock});map[k].total+=p.stock;if(p.media.length>map[k].media.length){map[k].media=p.media;map[k].mainImg=p.mainImg;}});
+  productos.forEach(p=>{const k=p.cod+'||'+p.color;if(!map[k])map[k]={cat:p.cat,desc:p.desc,color:p.color,precio:p.precio,precioSin:p.precioSin,talles:[],mainImg:p.mainImg,media:p.media,total:0};map[k].talles.push({talle:p.talle,stock:p.stock});map[k].total+=p.stock;if(p.media.length>map[k].media.length){map[k].media=p.media;map[k].mainImg=p.mainImg;}});
   return Object.values(map).filter(p=>p.total>0);
 }
 
